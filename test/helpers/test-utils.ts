@@ -33,9 +33,7 @@ export async function createTestApp(
 /**
  * Closes the NestJS application after tests
  */
-export async function closeTestApp(
-  app: INestApplication<App>,
-): Promise<void> {
+export async function closeTestApp(app: INestApplication<App>): Promise<void> {
   if (app) {
     await app.close();
   }
@@ -84,10 +82,7 @@ export function expectToBeCloseTo(
 /**
  * Creates a spy on a method and returns it
  */
-export function createSpy<T>(
-  object: T,
-  method: keyof T,
-): jest.SpyInstance {
+export function createSpy<T>(object: T, method: keyof T): jest.SpyInstance {
   return jest.spyOn(object as any, method as string);
 }
 

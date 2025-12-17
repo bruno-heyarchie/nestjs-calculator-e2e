@@ -171,7 +171,9 @@ export class CalculatorTestDataFactory {
   /**
    * Generate random valid number pairs for testing
    */
-  static generateRandomNumberPairs(count: number): Array<{ a: number; b: number }> {
+  static generateRandomNumberPairs(
+    count: number,
+  ): Array<{ a: number; b: number }> {
     const pairs: Array<{ a: number; b: number }> = [];
     for (let i = 0; i < count; i++) {
       pairs.push({

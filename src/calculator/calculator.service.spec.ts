@@ -56,22 +56,30 @@ describe('CalculatorService', () => {
 
     it('should throw error for NaN as first operand', () => {
       expect(() => service.add(NaN, 5)).toThrow(BadRequestException);
-      expect(() => service.add(NaN, 5)).toThrow('First operand must be a valid finite number');
+      expect(() => service.add(NaN, 5)).toThrow(
+        'First operand must be a valid finite number',
+      );
     });
 
     it('should throw error for NaN as second operand', () => {
       expect(() => service.add(5, NaN)).toThrow(BadRequestException);
-      expect(() => service.add(5, NaN)).toThrow('Second operand must be a valid finite number');
+      expect(() => service.add(5, NaN)).toThrow(
+        'Second operand must be a valid finite number',
+      );
     });
 
     it('should throw error for Infinity as first operand', () => {
       expect(() => service.add(Infinity, 5)).toThrow(BadRequestException);
-      expect(() => service.add(Infinity, 5)).toThrow('First operand must be a valid finite number');
+      expect(() => service.add(Infinity, 5)).toThrow(
+        'First operand must be a valid finite number',
+      );
     });
 
     it('should throw error for Infinity as second operand', () => {
       expect(() => service.add(5, Infinity)).toThrow(BadRequestException);
-      expect(() => service.add(5, Infinity)).toThrow('Second operand must be a valid finite number');
+      expect(() => service.add(5, Infinity)).toThrow(
+        'Second operand must be a valid finite number',
+      );
     });
 
     it('should throw error for negative Infinity', () => {
@@ -122,12 +130,16 @@ describe('CalculatorService', () => {
 
     it('should throw error for NaN as first operand', () => {
       expect(() => service.subtract(NaN, 5)).toThrow(BadRequestException);
-      expect(() => service.subtract(NaN, 5)).toThrow('First operand must be a valid finite number');
+      expect(() => service.subtract(NaN, 5)).toThrow(
+        'First operand must be a valid finite number',
+      );
     });
 
     it('should throw error for NaN as second operand', () => {
       expect(() => service.subtract(5, NaN)).toThrow(BadRequestException);
-      expect(() => service.subtract(5, NaN)).toThrow('Second operand must be a valid finite number');
+      expect(() => service.subtract(5, NaN)).toThrow(
+        'Second operand must be a valid finite number',
+      );
     });
 
     it('should throw error for Infinity as first operand', () => {
@@ -200,12 +212,16 @@ describe('CalculatorService', () => {
 
     it('should throw error for NaN as first operand', () => {
       expect(() => service.multiply(NaN, 5)).toThrow(BadRequestException);
-      expect(() => service.multiply(NaN, 5)).toThrow('First operand must be a valid finite number');
+      expect(() => service.multiply(NaN, 5)).toThrow(
+        'First operand must be a valid finite number',
+      );
     });
 
     it('should throw error for NaN as second operand', () => {
       expect(() => service.multiply(5, NaN)).toThrow(BadRequestException);
-      expect(() => service.multiply(5, NaN)).toThrow('Second operand must be a valid finite number');
+      expect(() => service.multiply(5, NaN)).toThrow(
+        'Second operand must be a valid finite number',
+      );
     });
 
     it('should throw error for Infinity as first operand', () => {
@@ -282,27 +298,37 @@ describe('CalculatorService', () => {
 
     it('should throw error when dividing by zero', () => {
       expect(() => service.divide(5, 0)).toThrow(BadRequestException);
-      expect(() => service.divide(5, 0)).toThrow('Division by zero is not allowed');
+      expect(() => service.divide(5, 0)).toThrow(
+        'Division by zero is not allowed',
+      );
     });
 
     it('should throw error when dividing zero by zero', () => {
       expect(() => service.divide(0, 0)).toThrow(BadRequestException);
-      expect(() => service.divide(0, 0)).toThrow('Division by zero is not allowed');
+      expect(() => service.divide(0, 0)).toThrow(
+        'Division by zero is not allowed',
+      );
     });
 
     it('should throw error when dividing negative number by zero', () => {
       expect(() => service.divide(-5, 0)).toThrow(BadRequestException);
-      expect(() => service.divide(-5, 0)).toThrow('Division by zero is not allowed');
+      expect(() => service.divide(-5, 0)).toThrow(
+        'Division by zero is not allowed',
+      );
     });
 
     it('should throw error for NaN as first operand', () => {
       expect(() => service.divide(NaN, 5)).toThrow(BadRequestException);
-      expect(() => service.divide(NaN, 5)).toThrow('First operand must be a valid finite number');
+      expect(() => service.divide(NaN, 5)).toThrow(
+        'First operand must be a valid finite number',
+      );
     });
 
     it('should throw error for NaN as second operand', () => {
       expect(() => service.divide(5, NaN)).toThrow(BadRequestException);
-      expect(() => service.divide(5, NaN)).toThrow('Second operand must be a valid finite number');
+      expect(() => service.divide(5, NaN)).toThrow(
+        'Second operand must be a valid finite number',
+      );
     });
 
     it('should throw error for Infinity as first operand', () => {

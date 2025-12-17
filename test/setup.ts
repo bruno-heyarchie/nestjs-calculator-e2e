@@ -41,11 +41,9 @@ expect.extend({
 });
 
 // Extend Jest matchers type definition
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeWithinRange(floor: number, ceiling: number): R;
-    }
+declare module '@jest/expect' {
+  interface Matchers<R> {
+    toBeWithinRange(floor: number, ceiling: number): R;
   }
 }
 

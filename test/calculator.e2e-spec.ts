@@ -153,7 +153,12 @@ describe('Calculator API (e2e)', () => {
         .get('/calculator/multiply?a=-5&b=-3')
         .expect(200)
         .expect(
-          MockResponseFactory.createSuccessResponse('multiplication', -5, -3, 15),
+          MockResponseFactory.createSuccessResponse(
+            'multiplication',
+            -5,
+            -3,
+            15,
+          ),
         );
     });
 
@@ -171,7 +176,12 @@ describe('Calculator API (e2e)', () => {
         .get('/calculator/multiply?a=2.5&b=4')
         .expect(200)
         .expect(
-          MockResponseFactory.createSuccessResponse('multiplication', 2.5, 4, 10),
+          MockResponseFactory.createSuccessResponse(
+            'multiplication',
+            2.5,
+            4,
+            10,
+          ),
         );
     });
 
@@ -193,9 +203,7 @@ describe('Calculator API (e2e)', () => {
       return request(app.getHttpServer())
         .get('/calculator/divide?a=6&b=3')
         .expect(200)
-        .expect(
-          MockResponseFactory.createSuccessResponse('division', 6, 3, 2),
-        );
+        .expect(MockResponseFactory.createSuccessResponse('division', 6, 3, 2));
     });
 
     it('should divide negative numbers', () => {
@@ -220,9 +228,7 @@ describe('Calculator API (e2e)', () => {
       return request(app.getHttpServer())
         .get('/calculator/divide?a=0&b=5')
         .expect(200)
-        .expect(
-          MockResponseFactory.createSuccessResponse('division', 0, 5, 0),
-        );
+        .expect(MockResponseFactory.createSuccessResponse('division', 0, 5, 0));
     });
 
     it('should return 400 when dividing by zero', () => {
