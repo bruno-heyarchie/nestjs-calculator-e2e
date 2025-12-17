@@ -17,6 +17,18 @@ export interface CalculatorErrorTestCase {
   description: string;
 }
 
+export interface SingleOperandTestCase {
+  a: number;
+  expectedResult: number;
+  description: string;
+}
+
+export interface SingleOperandErrorTestCase {
+  a: number;
+  expectedError: string;
+  description: string;
+}
+
 /**
  * Factory for generating calculator test data
  */
@@ -199,6 +211,186 @@ export class CalculatorTestDataFactory {
       -0.1,
       1e10,
       -1e10,
+    ];
+  }
+
+  /**
+   * Valid power operation test cases
+   */
+  static getPowerTestCases(): CalculatorOperationTestCase[] {
+    return [
+      { a: 2, b: 3, expectedResult: 8, description: 'positive base and exponent' },
+      { a: 5, b: 0, expectedResult: 1, description: 'power of zero' },
+      { a: 0, b: 5, expectedResult: 0, description: 'zero to positive power' },
+      { a: -2, b: 2, expectedResult: 4, description: 'negative base to even power' },
+      { a: -2, b: 3, expectedResult: -8, description: 'negative base to odd power' },
+      { a: 2, b: -2, expectedResult: 0.25, description: 'negative exponent' },
+      { a: 1.5, b: 2, expectedResult: 2.25, description: 'decimal base' },
+      { a: 10, b: 6, expectedResult: 1000000, description: 'large power' },
+    ];
+  }
+
+  /**
+   * Valid square root test cases
+   */
+  static getSqrtTestCases(): SingleOperandTestCase[] {
+    return [
+      { a: 4, expectedResult: 2, description: 'perfect square' },
+      { a: 0, expectedResult: 0, description: 'square root of zero' },
+      { a: 1, expectedResult: 1, description: 'square root of one' },
+      { a: 100, expectedResult: 10, description: 'large perfect square' },
+      { a: 2.25, expectedResult: 1.5, description: 'decimal perfect square' },
+      { a: 1000000, expectedResult: 1000, description: 'very large square' },
+    ];
+  }
+
+  /**
+   * Valid factorial test cases
+   */
+  static getFactorialTestCases(): SingleOperandTestCase[] {
+    return [
+      { a: 0, expectedResult: 1, description: 'factorial of zero' },
+      { a: 1, expectedResult: 1, description: 'factorial of one' },
+      { a: 5, expectedResult: 120, description: 'factorial of 5' },
+      { a: 10, expectedResult: 3628800, description: 'factorial of 10' },
+      { a: 3, expectedResult: 6, description: 'factorial of 3' },
+      { a: 4, expectedResult: 24, description: 'factorial of 4' },
+    ];
+  }
+
+  /**
+   * Valid modulo test cases
+   */
+  static getModuloTestCases(): CalculatorOperationTestCase[] {
+    return [
+      { a: 7, b: 3, expectedResult: 1, description: 'positive numbers with remainder' },
+      { a: 6, b: 3, expectedResult: 0, description: 'zero remainder' },
+      { a: 3, b: 7, expectedResult: 3, description: 'dividend smaller than divisor' },
+      { a: -7, b: 3, expectedResult: -1, description: 'negative dividend' },
+      { a: 7, b: -3, expectedResult: 1, description: 'negative divisor' },
+      { a: 0, b: 5, expectedResult: 0, description: 'zero dividend' },
+      { a: 1000000, b: 7, expectedResult: 1, description: 'large numbers' },
+    ];
+  }
+
+  /**
+   * Valid absolute value test cases
+   */
+  static getAbsoluteTestCases(): SingleOperandTestCase[] {
+    return [
+      { a: 5, expectedResult: 5, description: 'positive number' },
+      { a: -5, expectedResult: 5, description: 'negative number' },
+      { a: 0, expectedResult: 0, description: 'zero' },
+      { a: -3.14, expectedResult: 3.14, description: 'negative decimal' },
+      { a: -1000000, expectedResult: 1000000, description: 'large negative' },
+    ];
+  }
+
+  /**
+   * Valid ceiling test cases
+   */
+  static getCeilingTestCases(): SingleOperandTestCase[] {
+    return [
+      { a: 3.2, expectedResult: 4, description: 'positive decimal' },
+      { a: 3.9, expectedResult: 4, description: 'decimal close to integer' },
+      { a: 5, expectedResult: 5, description: 'integer' },
+      { a: -3.2, expectedResult: -3, description: 'negative decimal' },
+      { a: 0, expectedResult: 0, description: 'zero' },
+      { a: 0.1, expectedResult: 1, description: 'small positive' },
+    ];
+  }
+
+  /**
+   * Valid floor test cases
+   */
+  static getFloorTestCases(): SingleOperandTestCase[] {
+    return [
+      { a: 3.9, expectedResult: 3, description: 'positive decimal' },
+      { a: 3.1, expectedResult: 3, description: 'decimal close to integer' },
+      { a: 5, expectedResult: 5, description: 'integer' },
+      { a: -3.1, expectedResult: -4, description: 'negative decimal' },
+      { a: 0, expectedResult: 0, description: 'zero' },
+      { a: 0.9, expectedResult: 0, description: 'small positive' },
+    ];
+  }
+
+  /**
+   * Valid round test cases
+   */
+  static getRoundTestCases(): SingleOperandTestCase[] {
+    return [
+      { a: 3.5, expectedResult: 4, description: 'round up at 0.5' },
+      { a: 3.4, expectedResult: 3, description: 'round down below 0.5' },
+      { a: 3.6, expectedResult: 4, description: 'round up above 0.5' },
+      { a: 5, expectedResult: 5, description: 'integer' },
+      { a: -3.5, expectedResult: -3, description: 'negative at 0.5' },
+      { a: 0, expectedResult: 0, description: 'zero' },
+    ];
+  }
+
+  /**
+   * Sqrt error test cases
+   */
+  static getSqrtErrorTestCases(): SingleOperandErrorTestCase[] {
+    return [
+      {
+        a: -4,
+        expectedError: 'Cannot calculate square root of negative number',
+        description: 'negative number',
+      },
+      {
+        a: NaN,
+        expectedError: 'Operand must be a valid finite number',
+        description: 'NaN',
+      },
+      {
+        a: Infinity,
+        expectedError: 'Operand must be a valid finite number',
+        description: 'Infinity',
+      },
+    ];
+  }
+
+  /**
+   * Factorial error test cases
+   */
+  static getFactorialErrorTestCases(): SingleOperandErrorTestCase[] {
+    return [
+      {
+        a: -5,
+        expectedError: 'Cannot calculate factorial of negative number',
+        description: 'negative number',
+      },
+      {
+        a: 5.5,
+        expectedError: 'Factorial requires an integer input',
+        description: 'decimal number',
+      },
+      {
+        a: 171,
+        expectedError: 'Factorial input too large (maximum is 170)',
+        description: 'number greater than 170',
+      },
+    ];
+  }
+
+  /**
+   * Modulo by zero test cases
+   */
+  static getModuloByZeroTestCases(): CalculatorErrorTestCase[] {
+    return [
+      {
+        a: 5,
+        b: 0,
+        expectedError: 'Modulo by zero is not allowed',
+        description: 'positive number modulo zero',
+      },
+      {
+        a: -5,
+        b: 0,
+        expectedError: 'Modulo by zero is not allowed',
+        description: 'negative number modulo zero',
+      },
     ];
   }
 }
