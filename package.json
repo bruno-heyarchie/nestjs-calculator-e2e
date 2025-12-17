@@ -5,6 +5,10 @@
   "author": "",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -20,7 +24,12 @@
     "test:e2e": "jest --config ./test/jest-e2e.config.ts",
     "test:e2e:cov": "jest --config ./test/jest-e2e.config.ts --coverage",
     "test:all": "npm test && npm run test:e2e",
-    "prepare": "husky"
+    "prepare": "husky",
+    "audit": "npm audit --audit-level=moderate",
+    "audit:fix": "npm audit fix",
+    "deps:check": "npm outdated",
+    "deps:update": "npm update",
+    "preinstall": "npx only-allow npm"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
