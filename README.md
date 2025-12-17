@@ -56,6 +56,12 @@ $ npm run build
 ```
 calculator-api/
 ├── src/
+│   ├── calculator/
+│   │   ├── calculator.controller.ts      # Calculator REST endpoints
+│   │   ├── calculator.controller.spec.ts # Controller unit tests
+│   │   ├── calculator.service.ts         # Calculator business logic
+│   │   ├── calculator.service.spec.ts    # Service unit tests
+│   │   └── calculator.module.ts          # Calculator module definition
 │   ├── app.controller.ts      # Main application controller
 │   ├── app.controller.spec.ts # Controller unit tests
 │   ├── app.module.ts           # Root application module
@@ -77,7 +83,84 @@ calculator-api/
 
 The application runs on `http://localhost:3000` by default.
 
+### Health Check
 - `GET /` - Health check endpoint
+  - Returns: `{ message: "Hello World!" }`
+
+### Calculator Endpoints
+
+All calculator endpoints accept two query parameters:
+- `a` (number): First operand
+- `b` (number): Second operand
+
+#### Addition
+```
+GET /calculator/add?a=5&b=3
+```
+Response:
+```json
+{
+  "operation": "addition",
+  "a": 5,
+  "b": 3,
+  "result": 8
+}
+```
+
+#### Subtraction
+```
+GET /calculator/subtract?a=5&b=3
+```
+Response:
+```json
+{
+  "operation": "subtraction",
+  "a": 5,
+  "b": 3,
+  "result": 2
+}
+```
+
+#### Multiplication
+```
+GET /calculator/multiply?a=5&b=3
+```
+Response:
+```json
+{
+  "operation": "multiplication",
+  "a": 5,
+  "b": 3,
+  "result": 15
+}
+```
+
+#### Division
+```
+GET /calculator/divide?a=6&b=3
+```
+Response:
+```json
+{
+  "operation": "division",
+  "a": 6,
+  "b": 3,
+  "result": 2
+}
+```
+
+### Error Handling
+
+The API returns appropriate HTTP status codes and error messages:
+
+- **400 Bad Request**: Invalid input (non-numeric values, division by zero, NaN, Infinity)
+  ```json
+  {
+    "statusCode": 400,
+    "message": "Division by zero is not allowed",
+    "error": "Bad Request"
+  }
+  ```
 
 ## Development
 
