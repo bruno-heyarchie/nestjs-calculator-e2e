@@ -219,11 +219,26 @@ export class CalculatorTestDataFactory {
    */
   static getPowerTestCases(): CalculatorOperationTestCase[] {
     return [
-      { a: 2, b: 3, expectedResult: 8, description: 'positive base and exponent' },
+      {
+        a: 2,
+        b: 3,
+        expectedResult: 8,
+        description: 'positive base and exponent',
+      },
       { a: 5, b: 0, expectedResult: 1, description: 'power of zero' },
       { a: 0, b: 5, expectedResult: 0, description: 'zero to positive power' },
-      { a: -2, b: 2, expectedResult: 4, description: 'negative base to even power' },
-      { a: -2, b: 3, expectedResult: -8, description: 'negative base to odd power' },
+      {
+        a: -2,
+        b: 2,
+        expectedResult: 4,
+        description: 'negative base to even power',
+      },
+      {
+        a: -2,
+        b: 3,
+        expectedResult: -8,
+        description: 'negative base to odd power',
+      },
       { a: 2, b: -2, expectedResult: 0.25, description: 'negative exponent' },
       { a: 1.5, b: 2, expectedResult: 2.25, description: 'decimal base' },
       { a: 10, b: 6, expectedResult: 1000000, description: 'large power' },
@@ -263,9 +278,19 @@ export class CalculatorTestDataFactory {
    */
   static getModuloTestCases(): CalculatorOperationTestCase[] {
     return [
-      { a: 7, b: 3, expectedResult: 1, description: 'positive numbers with remainder' },
+      {
+        a: 7,
+        b: 3,
+        expectedResult: 1,
+        description: 'positive numbers with remainder',
+      },
       { a: 6, b: 3, expectedResult: 0, description: 'zero remainder' },
-      { a: 3, b: 7, expectedResult: 3, description: 'dividend smaller than divisor' },
+      {
+        a: 3,
+        b: 7,
+        expectedResult: 3,
+        description: 'dividend smaller than divisor',
+      },
       { a: -7, b: 3, expectedResult: -1, description: 'negative dividend' },
       { a: 7, b: -3, expectedResult: 1, description: 'negative divisor' },
       { a: 0, b: 5, expectedResult: 0, description: 'zero dividend' },
