@@ -1,5 +1,15 @@
-import { Controller, Get, Query, ParseFloatPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Body,
+  ParseFloatPipe,
+  ValidationPipe,
+  UsePipes,
+} from '@nestjs/common';
 import { CalculatorService } from './calculator.service';
+import { CalculatorRequestDto, CalculatorResponseDto } from './dto';
 
 @Controller('calculator')
 export class CalculatorController {
@@ -16,6 +26,18 @@ export class CalculatorController {
   ): { operation: string; a: number; b: number; result: number } {
     const result = this.calculatorService.add(a, b);
     return { operation: 'addition', a, b, result };
+  }
+
+  /**
+   * Add two numbers via POST
+   * POST /calculator/add
+   * Body: { "a": 5, "b": 3 }
+   */
+  @Post('add')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  addPost(@Body() request: CalculatorRequestDto): CalculatorResponseDto {
+    const result = this.calculatorService.add(request.a, request.b);
+    return { result, operation: 'addition' };
   }
 
   /**

@@ -6,7 +6,25 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['eslint.config.mjs'],
+    ignores: [
+      'eslint.config.mjs',
+      'node_modules/',
+      'dist/',
+      'build/',
+      'coverage/',
+      '*.lcov',
+      '.eslintcache',
+      '.cache',
+      '.env',
+      '.env.*',
+      'logs/',
+      '*.log',
+      '*.js.map',
+      '*.d.ts',
+      'package-lock.json',
+      'yarn.lock',
+      'pnpm-lock.yaml',
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,

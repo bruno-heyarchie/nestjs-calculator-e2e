@@ -24,6 +24,79 @@ describe('Calculator API (e2e)', () => {
     await app.close();
   });
 
+  describe('/calculator/add (POST)', () => {
+    it('should add two positive numbers', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/add')
+        .send({ a: 5, b: 3 })
+        .expect(201)
+        .expect({ result: 8, operation: 'addition' });
+    });
+
+    it('should add negative numbers', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/add')
+        .send({ a: -5, b: -3 })
+        .expect(201)
+        .expect({ result: -8, operation: 'addition' });
+    });
+
+    it('should add decimal numbers', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/add')
+        .send({ a: 1.5, b: 2.3 })
+        .expect(201)
+        .then((response) => {
+          expect(response.body.operation).toBe('addition');
+          expect(response.body.result).toBeCloseTo(3.8, 1);
+        });
+    });
+
+    it('should handle zero values', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/add')
+        .send({ a: 0, b: 5 })
+        .expect(201)
+        .expect({ result: 5, operation: 'addition' });
+    });
+
+    it('should return 400 for missing parameter a', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/add')
+        .send({ b: 5 })
+        .expect(400);
+    });
+
+    it('should return 400 for missing parameter b', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/add')
+        .send({ a: 5 })
+        .expect(400);
+    });
+
+    it('should return 400 for non-numeric values', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/add')
+        .send({ a: 'abc', b: 5 })
+        .expect(400);
+    });
+
+    it('should return 400 for empty body', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/add')
+        .send({})
+        .expect(400);
+    });
+
+    it('should handle large numbers', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/add')
+        .send({ a: 999999999, b: 1 })
+        .expect(201)
+        .expect({ result: 1000000000, operation: 'addition' });
+    });
+  });
+
   describe('/calculator/add (GET)', () => {
     it('should add two positive numbers', () => {
       return request(app.getHttpServer())

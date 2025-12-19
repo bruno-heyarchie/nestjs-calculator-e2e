@@ -38,6 +38,42 @@ describe('CalculatorController', () => {
     });
   });
 
+  describe('addPost', () => {
+    it('should return addition result with CalculatorResponseDto format', () => {
+      const request = { a: 5, b: 3 };
+      const result = controller.addPost(request);
+      expect(result).toEqual({
+        result: 8,
+        operation: 'addition',
+      });
+    });
+
+    it('should call service.add with correct parameters', () => {
+      const spy = jest.spyOn(service, 'add');
+      const request = { a: 10, b: 20 };
+      controller.addPost(request);
+      expect(spy).toHaveBeenCalledWith(10, 20);
+    });
+
+    it('should handle negative numbers', () => {
+      const request = { a: -5, b: 3 };
+      const result = controller.addPost(request);
+      expect(result).toEqual({
+        result: -2,
+        operation: 'addition',
+      });
+    });
+
+    it('should handle decimal numbers', () => {
+      const request = { a: 5.5, b: 3.2 };
+      const result = controller.addPost(request);
+      expect(result).toEqual({
+        result: 8.7,
+        operation: 'addition',
+      });
+    });
+  });
+
   describe('subtract', () => {
     it('should return subtraction result', () => {
       const result = controller.subtract(5, 3);
