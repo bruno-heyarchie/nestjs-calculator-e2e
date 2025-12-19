@@ -77,15 +77,42 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Calculator API')
     .setDescription(
-      'A NestJS-based REST API calculator application providing basic arithmetic operations',
+      'A NestJS-based REST API calculator application providing basic arithmetic operations.\n\n' +
+        '## Features\n' +
+        '- **Addition**: Add two numbers together\n' +
+        '- **Subtraction**: Subtract one number from another\n' +
+        '- **Multiplication**: Multiply two numbers\n' +
+        '- **Division**: Divide one number by another (with division by zero protection)\n\n' +
+        '## Request Methods\n' +
+        'All operations support both GET (query parameters) and POST (JSON body) methods.\n\n' +
+        '## Validation\n' +
+        'All inputs are automatically validated to ensure they are valid finite numbers within JavaScript safe integer range.',
     )
     .setVersion('1.0')
+    .setContact(
+      'API Support',
+      '',
+      process.env['SUPPORT_EMAIL'] || 'support@example.com',
+    )
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addTag('application', 'Application-level endpoints')
-    .addTag('calculator', 'Calculator arithmetic operations')
-    .addTag('health', 'Health check endpoints')
+    .addTag(
+      'calculator',
+      'Calculator arithmetic operations - supports both GET and POST methods',
+    )
+    .addTag('health', 'Health check and monitoring endpoints')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    customSiteTitle: 'Calculator API Documentation',
+    customfavIcon: 'https://nestjs.com/img/logo-small.svg',
+    swaggerOptions: {
+      persistAuthorization: true,
+      docExpansion: 'list',
+      filter: true,
+      showRequestDuration: true,
+    },
+  });
 
   // Get port from environment or default to 3000
   const port = process.env['PORT'] || 3000;
