@@ -5,7 +5,7 @@ import {
   HttpException,
   Logger,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { MathematicalError, CalculatorException } from '../exceptions';
 
 /**
@@ -20,18 +20,18 @@ export class MathExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest();
+    const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
 
     // Extract error information
     const errorResponse =
       typeof exceptionResponse === 'object'
-        ? exceptionResponse
+        ? (exceptionResponse as Record<string, any>)
         : { message: exceptionResponse };
 
     // Log the error with context including error code if available
-    const errorCode = (errorResponse as any).errorCode || 'N/A';
+    const errorCode = errorResponse['errorCode'] || 'N/A';
     this.logger.error(
       `Calculator error occurred - Path: ${request.url} - ` +
         `Method: ${request.method} - ` +
@@ -42,7 +42,7 @@ export class MathExceptionFilter implements ExceptionFilter {
     // Send formatted response with enhanced structure
     response.status(status).json({
       statusCode: status,
-      timestamp: errorResponse.timestamp || new Date().toISOString(),
+      timestamp: errorResponse['timestamp'] || new Date().toISOString(),
       path: request.url,
       method: request.method,
       ...errorResponse,

@@ -16,12 +16,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { CalculatorService } from './calculator.service';
-import {
-  CalculatorRequestDto,
-  CalculatorResponseDto,
-  ValidationErrorResponseDto,
-  DivisionByZeroErrorResponseDto,
-} from './dto';
+import { CalculatorRequestDto, CalculatorResponseDto } from './dto';
 import { MathExceptionFilter } from './filters';
 
 @Controller('calculator')

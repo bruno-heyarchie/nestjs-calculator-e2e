@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString, IsDateString, IsEnum } from 'class-validator';
-import { CalculatorOperation } from '../interfaces/calculator.interface';
+import type { CalculatorOperation } from '../interfaces/calculator.interface';
 
 /**
  * Data Transfer Object for calculation results
