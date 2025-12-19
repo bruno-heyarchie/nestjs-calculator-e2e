@@ -87,6 +87,12 @@ describe('CalculatorService', () => {
     it('should throw error for negative Infinity', () => {
       expect(() => service.add(-Infinity, 5)).toThrow(BadRequestException);
     });
+
+    it('should throw OverflowError when result exceeds MAX_SAFE_INTEGER', () => {
+      expect(() => service.add(Number.MAX_SAFE_INTEGER, 1)).toThrow(
+        BadRequestException,
+      );
+    });
   });
 
   describe('subtract', () => {
@@ -154,6 +160,12 @@ describe('CalculatorService', () => {
 
     it('should throw error for Infinity as second operand', () => {
       expect(() => service.subtract(5, Infinity)).toThrow(BadRequestException);
+    });
+
+    it('should throw UnderflowError when result is below MIN_SAFE_INTEGER', () => {
+      expect(() => service.subtract(Number.MIN_SAFE_INTEGER, 1)).toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -236,6 +248,12 @@ describe('CalculatorService', () => {
 
     it('should throw error for Infinity as second operand', () => {
       expect(() => service.multiply(5, Infinity)).toThrow(BadRequestException);
+    });
+
+    it('should throw OverflowError when result exceeds MAX_SAFE_INTEGER', () => {
+      expect(() => service.multiply(Number.MAX_SAFE_INTEGER, 2)).toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -427,6 +445,12 @@ describe('CalculatorService', () => {
     it('should throw error for negative base with fractional exponent', () => {
       expect(() => service.power(-4, 0.5)).toThrow(BadRequestException);
       expect(() => service.power(-4, 0.5)).toThrow('Result is not a number');
+    });
+
+    it('should throw OverflowError when result exceeds MAX_SAFE_INTEGER', () => {
+      expect(() => service.power(Number.MAX_SAFE_INTEGER, 2)).toThrow(
+        BadRequestException,
+      );
     });
   });
 
