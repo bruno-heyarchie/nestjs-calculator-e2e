@@ -17,7 +17,7 @@ export class CalculatorOperationDto {
   @IsNotEmpty({ message: 'First operand is required' })
   @IsNumber({}, { message: 'First operand must be a valid number' })
   @Type(() => Number)
-  a: number;
+  a!: number;
 
   /**
    * Second operand for the calculation
@@ -30,7 +30,7 @@ export class CalculatorOperationDto {
   @IsNotEmpty({ message: 'Second operand is required' })
   @IsNumber({}, { message: 'Second operand must be a valid number' })
   @Type(() => Number)
-  b: number;
+  b!: number;
 }
 
 /**
@@ -45,7 +45,7 @@ export class BinaryOperationResponseDto {
     example: 'add',
     enum: ['add', 'subtract', 'multiply', 'divide'],
   })
-  operation: string;
+  operation!: string;
 
   /**
    * First operand
@@ -55,7 +55,7 @@ export class BinaryOperationResponseDto {
     example: 10,
     type: Number,
   })
-  a: number;
+  a!: number;
 
   /**
    * Second operand
@@ -65,7 +65,7 @@ export class BinaryOperationResponseDto {
     example: 5,
     type: Number,
   })
-  b: number;
+  b!: number;
 
   /**
    * Result of the operation
@@ -75,7 +75,7 @@ export class BinaryOperationResponseDto {
     example: 15,
     type: Number,
   })
-  result: number;
+  result!: number;
 }
 
 /**
@@ -90,7 +90,7 @@ export class UnaryOperationResponseDto {
     example: 'square',
     type: String,
   })
-  operation: string;
+  operation!: string;
 
   /**
    * The operand
@@ -100,7 +100,7 @@ export class UnaryOperationResponseDto {
     example: 5,
     type: Number,
   })
-  value: number;
+  value!: number;
 
   /**
    * Result of the operation
@@ -110,5 +110,5 @@ export class UnaryOperationResponseDto {
     example: 25,
     type: Number,
   })
-  result: number;
+  result!: number;
 }
