@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
 import { CalculatorService } from './calculator.service';
 import { ValidationService } from './validation/validation.service';
+import { CalculationResultDto } from './dto/calculation-result.dto';
 
 describe('CalculatorService', () => {
   let service: CalculatorService;
@@ -836,6 +837,203 @@ describe('CalculatorService', () => {
 
     it('should throw error for negative Infinity', () => {
       expect(() => service.round(-Infinity)).toThrow(BadRequestException);
+    });
+  });
+
+  describe('DTO Response Formatting', () => {
+    describe('add with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.add(5, 3, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(8);
+        expect(result.operation).toBe('add');
+        expect(result.timestamp).toBeDefined();
+        expect(result.calculationId).toBeDefined();
+      });
+
+      it('should return number when formatResponse is false', () => {
+        const result = service.add(5, 3, false);
+
+        expect(typeof result).toBe('number');
+        expect(result).toBe(8);
+      });
+
+      it('should return number when formatResponse is omitted', () => {
+        const result = service.add(5, 3);
+
+        expect(typeof result).toBe('number');
+        expect(result).toBe(8);
+      });
+
+      it('should include valid ISO timestamp', () => {
+        const result = service.add(5, 3, true);
+
+        expect(result.timestamp).toMatch(
+          /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+        );
+      });
+
+      it('should include unique calculation ID', () => {
+        const result1 = service.add(5, 3, true);
+        const result2 = service.add(5, 3, true);
+
+        expect(result1.calculationId).toBeDefined();
+        expect(result2.calculationId).toBeDefined();
+        expect(result1.calculationId).not.toBe(result2.calculationId);
+      });
+    });
+
+    describe('subtract with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.subtract(10, 3, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(7);
+        expect(result.operation).toBe('subtract');
+      });
+    });
+
+    describe('multiply with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.multiply(5, 3, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(15);
+        expect(result.operation).toBe('multiply');
+      });
+    });
+
+    describe('divide with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.divide(10, 2, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(5);
+        expect(result.operation).toBe('divide');
+      });
+    });
+
+    describe('power with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.power(2, 3, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(8);
+        expect(result.operation).toBe('power');
+      });
+    });
+
+    describe('sqrt with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.sqrt(16, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(4);
+        expect(result.operation).toBe('sqrt');
+      });
+    });
+
+    describe('factorial with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.factorial(5, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(120);
+        expect(result.operation).toBe('factorial');
+      });
+    });
+
+    describe('modulo with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.modulo(10, 3, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(1);
+        expect(result.operation).toBe('modulo');
+      });
+    });
+
+    describe('absolute with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.absolute(-5, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(5);
+        expect(result.operation).toBe('absolute');
+      });
+    });
+
+    describe('ceiling with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.ceiling(3.2, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(4);
+        expect(result.operation).toBe('ceiling');
+      });
+    });
+
+    describe('floor with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.floor(3.8, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(3);
+        expect(result.operation).toBe('floor');
+      });
+    });
+
+    describe('round with formatResponse', () => {
+      it('should return CalculationResultDto when formatResponse is true', () => {
+        const result = service.round(3.5, true);
+
+        expect(result).toBeInstanceOf(CalculationResultDto);
+        expect(result.result).toBe(4);
+        expect(result.operation).toBe('round');
+      });
+    });
+
+    describe('response consistency', () => {
+      it('should format responses consistently across different operations', () => {
+        const addResult = service.add(5, 3, true);
+        const subtractResult = service.subtract(10, 3, true);
+        const multiplyResult = service.multiply(5, 3, true);
+
+        // All should have the same structure
+        expect(addResult).toHaveProperty('result');
+        expect(addResult).toHaveProperty('operation');
+        expect(addResult).toHaveProperty('timestamp');
+        expect(addResult).toHaveProperty('calculationId');
+
+        expect(subtractResult).toHaveProperty('result');
+        expect(subtractResult).toHaveProperty('operation');
+        expect(subtractResult).toHaveProperty('timestamp');
+        expect(subtractResult).toHaveProperty('calculationId');
+
+        expect(multiplyResult).toHaveProperty('result');
+        expect(multiplyResult).toHaveProperty('operation');
+        expect(multiplyResult).toHaveProperty('timestamp');
+        expect(multiplyResult).toHaveProperty('calculationId');
+      });
+
+      it('should maintain result precision in DTO', () => {
+        const result = service.divide(22, 7, true);
+
+        expect(result.result).toBeCloseTo(3.142857142857143);
+      });
+
+      it('should handle negative results in DTO', () => {
+        const result = service.subtract(5, 10, true);
+
+        expect(result.result).toBe(-5);
+      });
+
+      it('should handle zero results in DTO', () => {
+        const result = service.subtract(5, 5, true);
+
+        expect(result.result).toBe(0);
+      });
     });
   });
 });

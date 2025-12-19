@@ -36,6 +36,16 @@ export interface ICalculatorResult {
    * The operation that was performed
    */
   operation: string;
+
+  /**
+   * ISO timestamp when the calculation was performed
+   */
+  timestamp: string;
+
+  /**
+   * Unique identifier for tracking this calculation
+   */
+  calculationId: string;
 }
 
 /**
