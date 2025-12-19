@@ -119,23 +119,50 @@ async function bootstrap() {
 
   await app.listen(port);
 
-  logger.log(`Application is running on: http://localhost:${port}`);
-  logger.log(`Environment: ${process.env['NODE_ENV'] || 'development'}`);
-  logger.log(`Health check available at: http://localhost:${port}/health`);
-  logger.log(`API documentation available at: http://localhost:${port}/api`);
-  logger.log('Global validation pipe enabled with class-validator');
-  logger.log('Global exception filters configured');
-  logger.log('Global logging and transform interceptors configured');
-  logger.log('Security headers enabled with helmet');
-  logger.log('Response compression enabled');
+  const isDevelopment = process.env['NODE_ENV'] === 'development';
+  const isHMREnabled = process.env['HMR_ENABLED'] === 'true';
+
+  logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  logger.log(`📦 Environment: ${process.env['NODE_ENV'] || 'development'}`);
+  logger.log(`💚 Health check available at: http://localhost:${port}/health`);
+  logger.log(`📚 API documentation available at: http://localhost:${port}/api`);
+  logger.log('✅ Global validation pipe enabled with class-validator');
+  logger.log('✅ Global exception filters configured');
+  logger.log('✅ Global logging and transform interceptors configured');
+  logger.log('✅ Security headers enabled with helmet');
+  logger.log('✅ Response compression enabled');
+
+  if (isDevelopment) {
+    logger.log('');
+    logger.log('🔧 Development mode features:');
+    logger.log('   - Verbose logging enabled');
+    logger.log('   - CORS enabled for all origins');
+    logger.log('   - Swagger UI enabled at /api');
+    if (isHMREnabled) {
+      logger.log('   - Hot Module Replacement (HMR) enabled');
+      logger.log('   - File changes will trigger automatic reload');
+    } else {
+      logger.log('   - File watching enabled (restart on changes)');
+    }
+    logger.log('');
+    logger.log('💡 TIP: Use npm run start:hmr for Hot Module Replacement');
+    logger.log('💡 TIP: Use npm run start:debug to enable debugging on port 9229');
+  }
 }
 
 void bootstrap();
 
 // Hot Module Replacement (HMR) for development
+// This enables fast refresh during development without losing application state
 if (module.hot) {
   module.hot.accept();
   module.hot.dispose(() => {
-    void NestFactory.create(AppModule).then((app) => app.close());
+    const logger = new Logger('HMR');
+    logger.log('🔄 Hot Module Replacement triggered - refreshing application...');
+    void NestFactory.create(AppModule).then((app) => {
+      return app.close().then(() => {
+        logger.log('✅ Application disposed successfully');
+      });
+    });
   });
 }
