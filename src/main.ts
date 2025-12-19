@@ -2,10 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import {
-  HttpExceptionFilter,
-  AllExceptionsFilter,
-} from './common/filters/http-exception.filter';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import helmet from 'helmet';
@@ -66,12 +63,9 @@ async function bootstrap() {
     }),
   );
 
-  // Configure global exception filters
-  // Order matters: more specific filters should come before general ones
-  app.useGlobalFilters(
-    new HttpExceptionFilter(), // Handles HttpException errors
-    new AllExceptionsFilter(), // Handles all other unhandled exceptions
-  );
+  // Configure global exception filter
+  // Single comprehensive filter that handles all exceptions with consistent formatting
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   // Configure global interceptors
   app.useGlobalInterceptors(
