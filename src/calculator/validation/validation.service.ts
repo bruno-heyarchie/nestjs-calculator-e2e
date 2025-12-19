@@ -1,15 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Injectable, Logger } from '@nestjs/common';
 import {
   IValidationResult,
   IValidationOptions,
   IValidationService,
-  ValidationErrorType,
 } from './validation.interface';
 import { InvalidOperandError } from '../exceptions';
 
 /**
  * Service for validating calculator inputs
  * Provides comprehensive validation for numbers, ranges, and edge cases
+ * Note: This service intentionally uses 'any' types to validate unknown values
  */
 @Injectable()
 export class ValidationService implements IValidationService {

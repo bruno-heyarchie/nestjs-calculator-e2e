@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ValidationService } from './validation.service';
 import { InvalidOperandError } from '../exceptions';
-import { ValidationErrorType } from './validation.interface';
 
 describe('ValidationService', () => {
   let service: ValidationService;
@@ -567,7 +566,7 @@ describe('ValidationService', () => {
       const result = service.validateNumber(-0, 'testParam');
       expect(result.isValid).toBe(true);
       // Note: -0 and 0 are treated as equal in JavaScript, but Object.is distinguishes them
-      expect(result.value === 0 || result.value === -0).toBe(true);
+      expect(result.value == 0 || Object.is(result.value, -0)).toBe(true);
     });
 
     it('should handle positive zero', () => {

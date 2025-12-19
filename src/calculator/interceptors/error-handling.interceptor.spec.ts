@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExecutionContext, CallHandler, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ExecutionContext,
+  CallHandler,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { of, throwError } from 'rxjs';
 import { ErrorHandlingInterceptor } from './error-handling.interceptor';
 import {
@@ -19,7 +24,9 @@ describe('ErrorHandlingInterceptor', () => {
       providers: [ErrorHandlingInterceptor],
     }).compile();
 
-    interceptor = module.get<ErrorHandlingInterceptor>(ErrorHandlingInterceptor);
+    interceptor = module.get<ErrorHandlingInterceptor>(
+      ErrorHandlingInterceptor,
+    );
 
     // Mock ExecutionContext
     mockExecutionContext = {
@@ -62,7 +69,9 @@ describe('ErrorHandlingInterceptor', () => {
   describe('CalculatorException Handling', () => {
     it('should pass through CalculatorException unchanged', (done) => {
       const exception = new DivisionByZeroException(10);
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => exception));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => exception));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
@@ -78,14 +87,16 @@ describe('ErrorHandlingInterceptor', () => {
 
     it('should preserve error code from CalculatorException', (done) => {
       const exception = new DivisionByZeroException();
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => exception));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => exception));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
           fail('Should throw error');
         },
         error: (error) => {
-          const response = error.getResponse() as any;
+          const response = error.getResponse();
           expect(response.errorCode).toBe(CalculatorErrorCode.DIVISION_BY_ZERO);
           done();
         },
@@ -95,8 +106,13 @@ describe('ErrorHandlingInterceptor', () => {
 
   describe('HttpException Handling', () => {
     it('should wrap non-calculator HttpException in UnexpectedException', (done) => {
-      const httpException = new HttpException('Not Found', HttpStatus.NOT_FOUND);
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => httpException));
+      const httpException = new HttpException(
+        'Not Found',
+        HttpStatus.NOT_FOUND,
+      );
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => httpException));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
@@ -104,7 +120,7 @@ describe('ErrorHandlingInterceptor', () => {
         },
         error: (error) => {
           expect(error).toBeInstanceOf(UnexpectedException);
-          const response = error.getResponse() as any;
+          const response = error.getResponse();
           expect(response.errorCode).toBe(CalculatorErrorCode.UNEXPECTED_ERROR);
           expect(response.message).toBe('Not Found');
           done();
@@ -117,7 +133,9 @@ describe('ErrorHandlingInterceptor', () => {
         { message: 'Custom error', extra: 'data' },
         HttpStatus.BAD_REQUEST,
       );
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => httpException));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => httpException));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
@@ -125,7 +143,7 @@ describe('ErrorHandlingInterceptor', () => {
         },
         error: (error) => {
           expect(error).toBeInstanceOf(UnexpectedException);
-          const response = error.getResponse() as any;
+          const response = error.getResponse();
           expect(response.message).toBe('Custom error');
           done();
         },
@@ -136,7 +154,9 @@ describe('ErrorHandlingInterceptor', () => {
   describe('Unknown Error Handling', () => {
     it('should wrap unknown errors in UnexpectedException', (done) => {
       const unknownError = new Error('Something went wrong');
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => unknownError));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => unknownError));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
@@ -144,7 +164,7 @@ describe('ErrorHandlingInterceptor', () => {
         },
         error: (error) => {
           expect(error).toBeInstanceOf(UnexpectedException);
-          const response = error.getResponse() as any;
+          const response = error.getResponse();
           expect(response.errorCode).toBe(CalculatorErrorCode.UNEXPECTED_ERROR);
           expect(response.message).toBe('Something went wrong');
           done();
@@ -154,7 +174,9 @@ describe('ErrorHandlingInterceptor', () => {
 
     it('should handle errors without message', (done) => {
       const unknownError = { toString: () => 'Unknown error' };
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => unknownError));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => unknownError));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
@@ -162,8 +184,10 @@ describe('ErrorHandlingInterceptor', () => {
         },
         error: (error) => {
           expect(error).toBeInstanceOf(UnexpectedException);
-          const response = error.getResponse() as any;
-          expect(response.message).toBe('An unexpected error occurred during calculation');
+          const response = error.getResponse();
+          expect(response.message).toBe(
+            'An unexpected error occurred during calculation',
+          );
           done();
         },
       });
@@ -174,7 +198,9 @@ describe('ErrorHandlingInterceptor', () => {
     it('should log error with context information', (done) => {
       const logSpy = jest.spyOn(interceptor['logger'], 'error');
       const exception = new DivisionByZeroException(10);
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => exception));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => exception));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
@@ -194,7 +220,9 @@ describe('ErrorHandlingInterceptor', () => {
     it('should include stack trace in logs', (done) => {
       const logSpy = jest.spyOn(interceptor['logger'], 'error');
       const error = new Error('Test error');
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => error));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => error));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
@@ -212,16 +240,20 @@ describe('ErrorHandlingInterceptor', () => {
   describe('Error Response Structure', () => {
     it('should ensure all wrapped errors have error codes', (done) => {
       const plainError = new Error('Plain error');
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => plainError));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => plainError));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
           fail('Should throw error');
         },
         error: (error) => {
-          const response = error.getResponse() as any;
+          const response = error.getResponse();
           expect(response.errorCode).toBeDefined();
-          expect(Object.values(CalculatorErrorCode)).toContain(response.errorCode);
+          expect(Object.values(CalculatorErrorCode)).toContain(
+            response.errorCode,
+          );
           done();
         },
       });
@@ -229,14 +261,16 @@ describe('ErrorHandlingInterceptor', () => {
 
     it('should ensure all wrapped errors have timestamps', (done) => {
       const plainError = new Error('Plain error');
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => plainError));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => plainError));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
           fail('Should throw error');
         },
         error: (error) => {
-          const response = error.getResponse() as any;
+          const response = error.getResponse();
           expect(response.timestamp).toBeDefined();
           expect(new Date(response.timestamp)).toBeInstanceOf(Date);
           done();
@@ -246,7 +280,9 @@ describe('ErrorHandlingInterceptor', () => {
 
     it('should ensure all wrapped errors have proper HTTP status codes', (done) => {
       const plainError = new Error('Plain error');
-      mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => plainError));
+      mockCallHandler.handle = jest
+        .fn()
+        .mockReturnValue(throwError(() => plainError));
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
         next: () => {
