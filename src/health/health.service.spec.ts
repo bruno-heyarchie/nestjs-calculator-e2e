@@ -111,7 +111,10 @@ describe('HealthService', () => {
       const liveness = result.liveness as any;
 
       expect(liveness).toHaveProperty('status', 'up');
-      expect(liveness).toHaveProperty('message', 'Application is alive and running');
+      expect(liveness).toHaveProperty(
+        'message',
+        'Application is alive and running',
+      );
       expect(liveness).toHaveProperty('uptime');
       expect(liveness.uptime).toBeGreaterThanOrEqual(0);
     });
@@ -126,7 +129,10 @@ describe('HealthService', () => {
       const readiness = result.readiness as any;
 
       expect(readiness).toHaveProperty('status', 'down');
-      expect(readiness).toHaveProperty('message', 'Application is initializing');
+      expect(readiness).toHaveProperty(
+        'message',
+        'Application is initializing',
+      );
     });
 
     it('should return ready status after initialization period', async () => {
@@ -139,7 +145,10 @@ describe('HealthService', () => {
       const readiness = result.readiness as any;
 
       expect(readiness).toHaveProperty('status', 'up');
-      expect(readiness).toHaveProperty('message', 'Application is ready to accept traffic');
+      expect(readiness).toHaveProperty(
+        'message',
+        'Application is ready to accept traffic',
+      );
       expect(readiness).toHaveProperty('ready', true);
     });
   });

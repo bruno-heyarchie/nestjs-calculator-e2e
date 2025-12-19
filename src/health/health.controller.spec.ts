@@ -54,8 +54,9 @@ describe('HealthController', () => {
     controller = module.get<HealthController>(HealthController);
     healthService = module.get<HealthService>(HealthService);
     healthCheckService = module.get<HealthCheckService>(HealthCheckService);
-    memoryHealthIndicator =
-      module.get<MemoryHealthIndicator>(MemoryHealthIndicator);
+    memoryHealthIndicator = module.get<MemoryHealthIndicator>(
+      MemoryHealthIndicator,
+    );
     diskHealthIndicator = module.get<DiskHealthIndicator>(DiskHealthIndicator);
   });
 
@@ -89,8 +90,8 @@ describe('HealthController', () => {
         },
       };
 
-      const mockMemoryHeap = { 'memory_heap': { status: 'up' } };
-      const mockMemoryRss = { 'memory_rss': { status: 'up' } };
+      const mockMemoryHeap = { memory_heap: { status: 'up' } };
+      const mockMemoryRss = { memory_rss: { status: 'up' } };
       const mockDisk = { disk: { status: 'up' } };
 
       jest
@@ -108,9 +109,19 @@ describe('HealthController', () => {
 
       const mockHealthCheckResult = {
         status: 'ok',
-        info: { ...mockDetailedStatus, ...mockMemoryHeap, ...mockMemoryRss, ...mockDisk },
+        info: {
+          ...mockDetailedStatus,
+          ...mockMemoryHeap,
+          ...mockMemoryRss,
+          ...mockDisk,
+        },
         error: {},
-        details: { ...mockDetailedStatus, ...mockMemoryHeap, ...mockMemoryRss, ...mockDisk },
+        details: {
+          ...mockDetailedStatus,
+          ...mockMemoryHeap,
+          ...mockMemoryRss,
+          ...mockDisk,
+        },
       };
 
       jest

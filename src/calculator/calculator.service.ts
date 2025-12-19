@@ -44,7 +44,12 @@ export class CalculatorService {
     const timestamp = new Date().toISOString();
     const calculationId = this.generateCalculationId();
 
-    return new CalculationResultDto(result, operation, timestamp, calculationId);
+    return new CalculationResultDto(
+      result,
+      operation,
+      timestamp,
+      calculationId,
+    );
   }
 
   /**

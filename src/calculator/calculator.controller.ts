@@ -67,9 +67,12 @@ export class CalculatorController {
     status: 400,
     description: 'Invalid input - parameters must be valid numbers',
   })
-  add(
-    @Query() query: CalculatorRequestDto,
-  ): { operation: string; a: number; b: number; result: number } {
+  add(@Query() query: CalculatorRequestDto): {
+    operation: string;
+    a: number;
+    b: number;
+    result: number;
+  } {
     const result = this.calculatorService.add(query.a, query.b);
     return { operation: 'addition', a: query.a, b: query.b, result };
   }
@@ -156,9 +159,12 @@ export class CalculatorController {
     status: 400,
     description: 'Invalid input - parameters must be valid numbers',
   })
-  subtract(
-    @Query() query: CalculatorRequestDto,
-  ): { operation: string; a: number; b: number; result: number } {
+  subtract(@Query() query: CalculatorRequestDto): {
+    operation: string;
+    a: number;
+    b: number;
+    result: number;
+  } {
     const result = this.calculatorService.subtract(query.a, query.b);
     return { operation: 'subtraction', a: query.a, b: query.b, result };
   }
@@ -248,11 +254,17 @@ export class CalculatorController {
     status: 400,
     description: 'Invalid input - parameters must be valid numbers',
   })
-  multiply(
-    @Query() query: CalculatorRequestDto,
-  ): { result: number; operation: string; operands: number[] } {
+  multiply(@Query() query: CalculatorRequestDto): {
+    result: number;
+    operation: string;
+    operands: number[];
+  } {
     const result = this.calculatorService.multiply(query.a, query.b);
-    return { result, operation: 'multiplication', operands: [query.a, query.b] };
+    return {
+      result,
+      operation: 'multiplication',
+      operands: [query.a, query.b],
+    };
   }
 
   /**
@@ -339,11 +351,14 @@ export class CalculatorController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Invalid input - parameters must be valid numbers or division by zero',
+    description:
+      'Invalid input - parameters must be valid numbers or division by zero',
   })
-  divide(
-    @Query() query: CalculatorRequestDto,
-  ): { result: number; operation: string; operands: number[] } {
+  divide(@Query() query: CalculatorRequestDto): {
+    result: number;
+    operation: string;
+    operands: number[];
+  } {
     const result = this.calculatorService.divide(query.a, query.b);
     return { result, operation: 'division', operands: [query.a, query.b] };
   }
