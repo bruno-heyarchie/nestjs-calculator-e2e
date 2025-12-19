@@ -27,10 +27,9 @@ describe('CalculatorController', () => {
     it('should return addition result', () => {
       const result = controller.add(5, 3);
       expect(result).toEqual({
-        operation: 'addition',
-        a: 5,
-        b: 3,
         result: 8,
+        operation: 'addition',
+        operands: [5, 3],
       });
     });
 
@@ -432,10 +431,9 @@ describe('CalculatorController (integration)', () => {
         .expect(200)
         .then((response) => {
           expect(response.body).toEqual({
-            operation: 'addition',
-            a: 2,
-            b: 3,
             result: 5,
+            operation: 'addition',
+            operands: [2, 3],
           });
         });
     });
@@ -459,8 +457,9 @@ describe('CalculatorController (integration)', () => {
         .then((response) => {
           expect(response.body).toHaveProperty('result');
           expect(response.body).toHaveProperty('operation');
-          expect(response.body).toHaveProperty('a');
-          expect(response.body).toHaveProperty('b');
+          expect(response.body).toHaveProperty('operands');
+          expect(Array.isArray(response.body.operands)).toBe(true);
+          expect(response.body.operands).toHaveLength(2);
         });
     });
   });
@@ -530,7 +529,7 @@ describe('CalculatorController (integration)', () => {
         .expect(400)
         .then((response) => {
           expect(response.body).toHaveProperty('message');
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           const errorMessage =
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             typeof response.body.message === 'string'
@@ -612,8 +611,13 @@ describe('CalculatorController (integration)', () => {
 
         expect(response.body).toHaveProperty('result');
         expect(response.body).toHaveProperty('operation');
-        expect(response.body).toHaveProperty('a');
-        expect(response.body).toHaveProperty('b');
+        if (op.expectedOp === 'addition') {
+          expect(response.body).toHaveProperty('operands');
+          expect(Array.isArray(response.body.operands)).toBe(true);
+        } else {
+          expect(response.body).toHaveProperty('a');
+          expect(response.body).toHaveProperty('b');
+        }
         expect(response.body.operation).toBe(op.expectedOp);
       }
     });
@@ -652,7 +656,7 @@ describe('CalculatorController (integration)', () => {
         .expect(400)
         .then((response) => {
           expect(response.body).toHaveProperty('message');
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           const errorMessage =
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             typeof response.body.message === 'string'

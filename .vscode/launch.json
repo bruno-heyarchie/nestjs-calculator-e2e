@@ -4,35 +4,102 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug NestJS",
+      "name": "Debug NestJS Application",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "start:debug"],
       "console": "integratedTerminal",
       "restart": true,
       "protocol": "inspector",
-      "skipFiles": ["<node_internals>/**"]
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "envFile": "${workspaceFolder}/.env.development",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to NestJS Application",
+      "port": 9229,
+      "restart": true,
+      "protocol": "inspector",
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug NestJS with Break on Start",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:debug:brk"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "protocol": "inspector",
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "envFile": "${workspaceFolder}/.env.development",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "stopOnEntry": true
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Jest Current File",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": ["${fileBasenameNoExtension}", "--config", "jest.config.ts"],
+      "args": [
+        "${fileBasenameNoExtension}",
+        "--config",
+        "jest.config.ts",
+        "--runInBand"
+      ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "disableOptimisticBPs": true,
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "sourceMaps": true,
+      "env": {
+        "NODE_ENV": "test"
+      }
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Jest All",
+      "name": "Jest All Tests",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "args": ["--runInBand", "--config", "jest.config.ts"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "disableOptimisticBPs": true,
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "sourceMaps": true,
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest E2E Tests",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": ["--runInBand", "--config", "./test/jest-e2e.config.ts"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "sourceMaps": true,
+      "env": {
+        "NODE_ENV": "test"
+      }
     }
   ]
 }

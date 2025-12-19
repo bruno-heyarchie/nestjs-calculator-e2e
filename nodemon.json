@@ -1,0 +1,17 @@
+{
+  "watch": ["src"],
+  "ext": "ts,json",
+  "ignore": ["src/**/*.spec.ts", "src/**/*.test.ts", "node_modules", "dist"],
+  "exec": "ts-node -r tsconfig-paths/register src/main.ts",
+  "restartable": "rs",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "events": {
+    "restart": "echo '\\n[nodemon] 🔄 Restarting application...\\n'",
+    "crash": "echo '\\n[nodemon] ⚠️  Application crashed - waiting for changes...\\n'"
+  },
+  "delay": 1000,
+  "colours": true,
+  "verbose": false
+}
