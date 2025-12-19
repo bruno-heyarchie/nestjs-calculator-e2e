@@ -59,28 +59,28 @@ describe('CalculatorService', () => {
     it('should throw error for NaN as first operand', () => {
       expect(() => service.add(NaN, 5)).toThrow(BadRequestException);
       expect(() => service.add(NaN, 5)).toThrow(
-        'First operand must be a valid finite number',
+        'First operand: First operand must not be NaN',
       );
     });
 
     it('should throw error for NaN as second operand', () => {
       expect(() => service.add(5, NaN)).toThrow(BadRequestException);
       expect(() => service.add(5, NaN)).toThrow(
-        'Second operand must be a valid finite number',
+        'Second operand: Second operand must not be NaN',
       );
     });
 
     it('should throw error for Infinity as first operand', () => {
       expect(() => service.add(Infinity, 5)).toThrow(BadRequestException);
       expect(() => service.add(Infinity, 5)).toThrow(
-        'First operand must be a valid finite number',
+        'First operand: First operand must be a finite number',
       );
     });
 
     it('should throw error for Infinity as second operand', () => {
       expect(() => service.add(5, Infinity)).toThrow(BadRequestException);
       expect(() => service.add(5, Infinity)).toThrow(
-        'Second operand must be a valid finite number',
+        'Second operand: Second operand must be a finite number',
       );
     });
 
@@ -133,14 +133,14 @@ describe('CalculatorService', () => {
     it('should throw error for NaN as first operand', () => {
       expect(() => service.subtract(NaN, 5)).toThrow(BadRequestException);
       expect(() => service.subtract(NaN, 5)).toThrow(
-        'First operand must be a valid finite number',
+        'First operand: First operand must not be NaN',
       );
     });
 
     it('should throw error for NaN as second operand', () => {
       expect(() => service.subtract(5, NaN)).toThrow(BadRequestException);
       expect(() => service.subtract(5, NaN)).toThrow(
-        'Second operand must be a valid finite number',
+        'Second operand: Second operand must not be NaN',
       );
     });
 
@@ -215,14 +215,14 @@ describe('CalculatorService', () => {
     it('should throw error for NaN as first operand', () => {
       expect(() => service.multiply(NaN, 5)).toThrow(BadRequestException);
       expect(() => service.multiply(NaN, 5)).toThrow(
-        'First operand must be a valid finite number',
+        'First operand: First operand must not be NaN',
       );
     });
 
     it('should throw error for NaN as second operand', () => {
       expect(() => service.multiply(5, NaN)).toThrow(BadRequestException);
       expect(() => service.multiply(5, NaN)).toThrow(
-        'Second operand must be a valid finite number',
+        'Second operand: Second operand must not be NaN',
       );
     });
 
@@ -322,14 +322,14 @@ describe('CalculatorService', () => {
     it('should throw error for NaN as first operand', () => {
       expect(() => service.divide(NaN, 5)).toThrow(BadRequestException);
       expect(() => service.divide(NaN, 5)).toThrow(
-        'First operand: must not be NaN',
+        'First operand: First operand must not be NaN',
       );
     });
 
     it('should throw error for NaN as second operand', () => {
       expect(() => service.divide(5, NaN)).toThrow(BadRequestException);
       expect(() => service.divide(5, NaN)).toThrow(
-        'Second operand: must not be NaN',
+        'Second operand: Second operand must not be NaN',
       );
     });
 
@@ -398,14 +398,14 @@ describe('CalculatorService', () => {
     it('should throw error for NaN as base', () => {
       expect(() => service.power(NaN, 2)).toThrow(BadRequestException);
       expect(() => service.power(NaN, 2)).toThrow(
-        'First operand must be a valid finite number',
+        'First operand: First operand must not be NaN',
       );
     });
 
     it('should throw error for NaN as exponent', () => {
       expect(() => service.power(2, NaN)).toThrow(BadRequestException);
       expect(() => service.power(2, NaN)).toThrow(
-        'Second operand must be a valid finite number',
+        'Second operand: Second operand must not be NaN',
       );
     });
 
@@ -420,14 +420,14 @@ describe('CalculatorService', () => {
     it('should throw error for result that is not finite', () => {
       expect(() => service.power(10, 1000)).toThrow(BadRequestException);
       expect(() => service.power(10, 1000)).toThrow(
-        'Power operation resulted in non-finite number',
+        'Result is positive infinity',
       );
     });
 
     it('should throw error for negative base with fractional exponent', () => {
       expect(() => service.power(-4, 0.5)).toThrow(BadRequestException);
       expect(() => service.power(-4, 0.5)).toThrow(
-        'Power operation resulted in non-finite number',
+        'Result is not a number',
       );
     });
   });
@@ -475,7 +475,7 @@ describe('CalculatorService', () => {
     it('should throw error for NaN', () => {
       expect(() => service.sqrt(NaN)).toThrow(BadRequestException);
       expect(() => service.sqrt(NaN)).toThrow(
-        'Operand must be a valid finite number',
+        'Operand: Operand must not be NaN',
       );
     });
 
@@ -531,14 +531,14 @@ describe('CalculatorService', () => {
     it('should throw error for decimal number', () => {
       expect(() => service.factorial(5.5)).toThrow(BadRequestException);
       expect(() => service.factorial(5.5)).toThrow(
-        'Factorial requires an integer input',
+        'Operand: must be an integer',
       );
     });
 
     it('should throw error for NaN', () => {
       expect(() => service.factorial(NaN)).toThrow(BadRequestException);
       expect(() => service.factorial(NaN)).toThrow(
-        'Operand must be a valid finite number',
+        'Operand: Operand must not be NaN',
       );
     });
 
@@ -549,14 +549,14 @@ describe('CalculatorService', () => {
     it('should throw error for number greater than 170', () => {
       expect(() => service.factorial(171)).toThrow(BadRequestException);
       expect(() => service.factorial(171)).toThrow(
-        'Factorial input too large (maximum is 170)',
+        'Input too large (maximum is 170)',
       );
     });
 
     it('should throw error for large number', () => {
       expect(() => service.factorial(500)).toThrow(BadRequestException);
       expect(() => service.factorial(500)).toThrow(
-        'Factorial input too large (maximum is 170)',
+        'Input too large (maximum is 170)',
       );
     });
   });
@@ -608,14 +608,14 @@ describe('CalculatorService', () => {
     it('should throw error for NaN as dividend', () => {
       expect(() => service.modulo(NaN, 5)).toThrow(BadRequestException);
       expect(() => service.modulo(NaN, 5)).toThrow(
-        'First operand must be a valid finite number',
+        'First operand: First operand must not be NaN',
       );
     });
 
     it('should throw error for NaN as divisor', () => {
       expect(() => service.modulo(5, NaN)).toThrow(BadRequestException);
       expect(() => service.modulo(5, NaN)).toThrow(
-        'Second operand must be a valid finite number',
+        'Second operand: Second operand must not be NaN',
       );
     });
 
@@ -660,7 +660,7 @@ describe('CalculatorService', () => {
     it('should throw error for NaN', () => {
       expect(() => service.absolute(NaN)).toThrow(BadRequestException);
       expect(() => service.absolute(NaN)).toThrow(
-        'Operand must be a valid finite number',
+        'Operand: Operand must not be NaN',
       );
     });
 
@@ -713,7 +713,7 @@ describe('CalculatorService', () => {
     it('should throw error for NaN', () => {
       expect(() => service.ceiling(NaN)).toThrow(BadRequestException);
       expect(() => service.ceiling(NaN)).toThrow(
-        'Operand must be a valid finite number',
+        'Operand: Operand must not be NaN',
       );
     });
 
@@ -766,7 +766,7 @@ describe('CalculatorService', () => {
     it('should throw error for NaN', () => {
       expect(() => service.floor(NaN)).toThrow(BadRequestException);
       expect(() => service.floor(NaN)).toThrow(
-        'Operand must be a valid finite number',
+        'Operand: Operand must not be NaN',
       );
     });
 
@@ -827,7 +827,7 @@ describe('CalculatorService', () => {
     it('should throw error for NaN', () => {
       expect(() => service.round(NaN)).toThrow(BadRequestException);
       expect(() => service.round(NaN)).toThrow(
-        'Operand must be a valid finite number',
+        'Operand: Operand must not be NaN',
       );
     });
 

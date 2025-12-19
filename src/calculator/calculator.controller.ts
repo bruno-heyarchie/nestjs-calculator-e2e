@@ -362,4 +362,48 @@ export class CalculatorController {
     const result = this.calculatorService.divide(query.a, query.b);
     return { result, operation: 'division', operands: [query.a, query.b] };
   }
+
+  /**
+   * Divide two numbers via POST
+   * POST /calculator/divide
+   * Body: { "a": 20, "b": 4 }
+   */
+  @Post('divide')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @ApiOperation({
+    summary: 'Divide two numbers (POST)',
+    description:
+      'Performs division (a ÷ b) via POST request with JSON body. Includes automatic validation and error handling for division by zero. Request body is automatically validated.',
+  })
+  @ApiBody({
+    type: CalculatorRequestDto,
+    description: 'JSON object containing two numbers to divide',
+    examples: {
+      example1: {
+        summary: 'Simple division',
+        value: { a: 20, b: 4 },
+      },
+      example2: {
+        summary: 'Decimal result',
+        value: { a: 10, b: 3 },
+      },
+      example3: {
+        summary: 'Negative numbers',
+        value: { a: -15, b: 3 },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Successfully performed division operation',
+    type: CalculatorResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input - body must contain valid numbers or division by zero error',
+  })
+  dividePost(@Body() request: CalculatorRequestDto): CalculatorResponseDto {
+    const result = this.calculatorService.divide(request.a, request.b);
+    return { result, operation: 'division' };
+  }
 }

@@ -219,6 +219,45 @@ describe('CalculatorController', () => {
       expect(spy).toHaveBeenCalledWith(10, 2);
     });
   });
+
+  describe('dividePost', () => {
+    it('should return division result with CalculatorResponseDto format', () => {
+      const request = { a: 20, b: 4 };
+      const result = controller.dividePost(request);
+      expect(result).toEqual({
+        result: 5,
+        operation: 'division',
+      });
+    });
+
+    it('should call service.divide with correct parameters', () => {
+      const spy = jest.spyOn(service, 'divide');
+      const request = { a: 20, b: 4 };
+      controller.dividePost(request);
+      expect(spy).toHaveBeenCalledWith(20, 4);
+    });
+
+    it('should handle decimal results', () => {
+      const request = { a: 10, b: 3 };
+      const result = controller.dividePost(request);
+      expect(result.result).toBeCloseTo(3.3333333333333335, 10);
+      expect(result.operation).toBe('division');
+    });
+
+    it('should handle negative numbers', () => {
+      const request = { a: -15, b: 3 };
+      const result = controller.dividePost(request);
+      expect(result).toEqual({
+        result: -5,
+        operation: 'division',
+      });
+    });
+
+    it('should throw DivisionByZeroError when dividing by zero', () => {
+      const request = { a: 10, b: 0 };
+      expect(() => controller.dividePost(request)).toThrow();
+    });
+  });
 });
 
 describe('CalculatorController (integration)', () => {
@@ -420,6 +459,65 @@ describe('CalculatorController (integration)', () => {
           expect(response.body).toHaveProperty('result');
           expect(response.body).toHaveProperty('operation');
           expect(response.body.operation).toBe('multiplication');
+        });
+    });
+  });
+
+  describe('POST /calculator/divide', () => {
+    it('should return 201 and correct result for valid request', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/divide')
+        .send({ a: 20, b: 4 })
+        .expect(201)
+        .expect({ result: 5, operation: 'division' });
+    });
+
+    it('should handle decimal results', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/divide')
+        .send({ a: 10, b: 3 })
+        .expect(201)
+        .then((response) => {
+          expect(response.body.result).toBeCloseTo(3.3333333333333335, 10);
+          expect(response.body.operation).toBe('division');
+        });
+    });
+
+    it('should handle negative numbers', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/divide')
+        .send({ a: -15, b: 3 })
+        .expect(201)
+        .expect({ result: -5, operation: 'division' });
+    });
+
+    it('should return 400 when dividing by zero', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/divide')
+        .send({ a: 10, b: 0 })
+        .expect(400)
+        .then((response) => {
+          expect(response.body).toHaveProperty('message');
+          expect(response.body.message).toContain('Division by zero');
+        });
+    });
+
+    it('should return 400 for invalid input', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/divide')
+        .send({ a: 'invalid', b: 3 })
+        .expect(400);
+    });
+
+    it('should have correct response schema', () => {
+      return request(app.getHttpServer())
+        .post('/calculator/divide')
+        .send({ a: 20, b: 5 })
+        .expect(201)
+        .then((response) => {
+          expect(response.body).toHaveProperty('result');
+          expect(response.body).toHaveProperty('operation');
+          expect(response.body.operation).toBe('division');
         });
     });
   });
