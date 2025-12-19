@@ -21,30 +21,43 @@ const config: Config = {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
 
-  // Coverage collection
+  // Enable coverage collection
+  collectCoverage: false, // Set to true in CI or use --coverage flag
+
+  // Coverage collection patterns
   collectCoverageFrom: [
     'src/**/*.(t|j)s',
-    '!src/main.ts',
-    '!src/**/*.module.ts',
-    '!src/**/*.interface.ts',
-    '!src/**/*.dto.ts',
+    '!src/**/*.spec.ts', // Exclude test files
+    '!src/**/*.e2e-spec.ts', // Exclude e2e test files
+    '!src/**/*.interface.ts', // Exclude interface files
+    '!src/**/*.dto.ts', // Exclude DTO files
+    '!src/**/*.module.ts', // Exclude module files
+    '!src/main.ts', // Exclude main entry point
+    '!src/**/*.constants.ts', // Exclude constant files
+    '!src/**/*.enum.ts', // Exclude enum files
   ],
 
-  // Coverage directory
-  coverageDirectory: './coverage',
+  // Coverage output directory
+  coverageDirectory: 'coverage',
 
-  // Coverage thresholds
+  // Coverage reporters - multiple formats for different use cases
+  coverageReporters: [
+    'html',        // Human-readable HTML report for local development
+    'text',        // Console output for quick feedback
+    'json',        // Machine-readable format for tools
+    'lcov',        // Standard format for CI/CD integration
+    'text-summary', // Brief summary in console
+  ],
+
+  // Coverage thresholds - build fails if below these values
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      branches: 80,    // 80% branch coverage required
+      functions: 80,   // 80% function coverage required
+      lines: 80,       // 80% line coverage required
+      statements: 80,  // 80% statement coverage required
     },
   },
-
-  // Coverage reporters
-  coverageReporters: ['text', 'text-summary', 'html', 'lcov', 'json'],
 
   // Module name mapper for path aliases
   moduleNameMapper: {
