@@ -134,10 +134,9 @@ describe('CalculatorController', () => {
     it('should return multiplication result', () => {
       const result = controller.multiply(5, 3);
       expect(result).toEqual({
-        operation: 'multiplication',
-        a: 5,
-        b: 3,
         result: 15,
+        operation: 'multiplication',
+        operands: [5, 3],
       });
     });
 
@@ -493,10 +492,9 @@ describe('CalculatorController (integration)', () => {
         .expect(200)
         .then((response) => {
           expect(response.body).toEqual({
-            operation: 'multiplication',
-            a: 4,
-            b: 3,
             result: 12,
+            operation: 'multiplication',
+            operands: [4, 3],
           });
         });
     });
@@ -505,6 +503,32 @@ describe('CalculatorController (integration)', () => {
       return request(app.getHttpServer())
         .get('/calculator/multiply?b=3')
         .expect(400);
+    });
+
+    it('should handle multiplication with zero', () => {
+      return request(app.getHttpServer())
+        .get('/calculator/multiply?a=5&b=0')
+        .expect(200)
+        .then((response) => {
+          expect(response.body).toEqual({
+            result: 0,
+            operation: 'multiplication',
+            operands: [5, 0],
+          });
+        });
+    });
+
+    it('should handle decimal numbers with appropriate precision', () => {
+      return request(app.getHttpServer())
+        .get('/calculator/multiply?a=4.5&b=2.5')
+        .expect(200)
+        .then((response) => {
+          expect(response.body).toEqual({
+            result: 11.25,
+            operation: 'multiplication',
+            operands: [4.5, 2.5],
+          });
+        });
     });
   });
 
@@ -611,7 +635,7 @@ describe('CalculatorController (integration)', () => {
 
         expect(response.body).toHaveProperty('result');
         expect(response.body).toHaveProperty('operation');
-        if (op.expectedOp === 'addition') {
+        if (op.expectedOp === 'addition' || op.expectedOp === 'multiplication') {
           expect(response.body).toHaveProperty('operands');
           expect(Array.isArray(response.body.operands)).toBe(true);
         } else {

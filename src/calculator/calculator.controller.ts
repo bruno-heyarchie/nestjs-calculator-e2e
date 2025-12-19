@@ -78,9 +78,9 @@ export class CalculatorController {
   multiply(
     @Query('a', ParseFloatPipe) a: number,
     @Query('b', ParseFloatPipe) b: number,
-  ): { operation: string; a: number; b: number; result: number } {
+  ): { result: number; operation: string; operands: number[] } {
     const result = this.calculatorService.multiply(a, b);
-    return { operation: 'multiplication', a, b, result };
+    return { result, operation: 'multiplication', operands: [a, b] };
   }
 
   /**
