@@ -54,15 +54,6 @@ export class CalculatorService {
   }
 
   /**
-   * Checks if a number is outside the safe integer range
-   * @param value - The value to check
-   * @returns true if the value is outside safe range
-   */
-  private isOutsideSafeRange(value: number): boolean {
-    return value > this.MAX_SAFE_INTEGER || value < this.MIN_SAFE_INTEGER;
-  }
-
-  /**
    * Validates that a result is within safe integer range
    * @param result - The result to validate
    * @param operation - The operation name for error messages
