@@ -5,6 +5,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "assets": ["**/*.json"],
-    "watchAssets": true
+    "watchAssets": true,
+    "webpack": true,
+    "webpackConfigPath": "webpack.config.js"
   }
 }

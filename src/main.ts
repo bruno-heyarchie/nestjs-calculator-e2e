@@ -47,3 +47,11 @@ async function bootstrap() {
 }
 
 void bootstrap();
+
+// Hot Module Replacement (HMR) for development
+if (module.hot) {
+  module.hot.accept();
+  module.hot.dispose(() => {
+    void NestFactory.create(AppModule).then((app) => app.close());
+  });
+}

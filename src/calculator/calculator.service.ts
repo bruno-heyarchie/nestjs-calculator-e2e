@@ -1,18 +1,45 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import {
+  DivisionByZeroError,
+  ModuloByZeroError,
+  OverflowError,
+  UnderflowError,
+  InvalidResultError,
+  InvalidOperationError,
+  InvalidOperandError,
+} from './exceptions';
 
 @Injectable()
 export class CalculatorService {
+  private readonly logger = new Logger(CalculatorService.name);
+
+  // Mathematical operation limits
+  private readonly MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
+  private readonly MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
+  private readonly MAX_FACTORIAL_INPUT = 170;
+
   /**
    * Validates that a number is finite and not NaN
    * @param value - The value to validate
    * @param paramName - The parameter name for error messages
-   * @throws BadRequestException if the value is not valid
+   * @throws InvalidOperandError if the value is not valid
    */
   private validateNumber(value: number, paramName: string): void {
-    if (!Number.isFinite(value)) {
-      throw new BadRequestException(
-        `${paramName} must be a valid finite number`,
+    if (typeof value !== 'number') {
+      this.logger.warn(
+        `Validation failed: ${paramName} is not a number (type: ${typeof value})`,
       );
+      throw new InvalidOperandError(paramName, 'must be a number');
+    }
+
+    if (Number.isNaN(value)) {
+      this.logger.warn(`Validation failed: ${paramName} is NaN`);
+      throw new InvalidOperandError(paramName, 'must not be NaN');
+    }
+
+    if (!Number.isFinite(value)) {
+      this.logger.warn(`Validation failed: ${paramName} is not finite`);
+      throw new InvalidOperandError(paramName, 'must be a finite number');
     }
   }
 
@@ -27,15 +54,70 @@ export class CalculatorService {
   }
 
   /**
+   * Checks if a number is outside the safe integer range
+   * @param value - The value to check
+   * @returns true if the value is outside safe range
+   */
+  private isOutsideSafeRange(value: number): boolean {
+    return value > this.MAX_SAFE_INTEGER || value < this.MIN_SAFE_INTEGER;
+  }
+
+  /**
+   * Validates that a result is within safe integer range
+   * @param result - The result to validate
+   * @param operation - The operation name for error messages
+   * @throws OverflowError or UnderflowError if outside safe range
+   */
+  private validateResultRange(result: number, operation: string): void {
+    if (!Number.isFinite(result)) {
+      this.logger.error(
+        `${operation} operation resulted in non-finite value: ${result}`,
+      );
+      throw new InvalidResultError(
+        operation,
+        result === Infinity
+          ? 'Result is positive infinity'
+          : result === -Infinity
+            ? 'Result is negative infinity'
+            : 'Result is not a number',
+      );
+    }
+
+    if (result > this.MAX_SAFE_INTEGER) {
+      this.logger.error(
+        `${operation} operation resulted in overflow: ${result} > ${this.MAX_SAFE_INTEGER}`,
+      );
+      throw new OverflowError(
+        operation,
+        `Result ${result} exceeds maximum safe integer ${this.MAX_SAFE_INTEGER}`,
+      );
+    }
+
+    if (result < this.MIN_SAFE_INTEGER) {
+      this.logger.error(
+        `${operation} operation resulted in underflow: ${result} < ${this.MIN_SAFE_INTEGER}`,
+      );
+      throw new UnderflowError(
+        operation,
+        `Result ${result} is below minimum safe integer ${this.MIN_SAFE_INTEGER}`,
+      );
+    }
+  }
+
+  /**
    * Adds two numbers
    * @param a - First number
    * @param b - Second number
    * @returns The sum of a and b
-   * @throws BadRequestException if operands are invalid
+   * @throws InvalidOperandError if operands are invalid
+   * @throws OverflowError if result exceeds safe range
    */
   add(a: number, b: number): number {
     this.validateOperands(a, b);
-    return a + b;
+    const result = a + b;
+    this.validateResultRange(result, 'addition');
+    this.logger.debug(`Addition: ${a} + ${b} = ${result}`);
+    return result;
   }
 
   /**
@@ -43,11 +125,15 @@ export class CalculatorService {
    * @param a - First number
    * @param b - Second number
    * @returns The difference of a and b
-   * @throws BadRequestException if operands are invalid
+   * @throws InvalidOperandError if operands are invalid
+   * @throws UnderflowError if result is below safe range
    */
   subtract(a: number, b: number): number {
     this.validateOperands(a, b);
-    return a - b;
+    const result = a - b;
+    this.validateResultRange(result, 'subtraction');
+    this.logger.debug(`Subtraction: ${a} - ${b} = ${result}`);
+    return result;
   }
 
   /**
@@ -55,11 +141,15 @@ export class CalculatorService {
    * @param a - First number
    * @param b - Second number
    * @returns The product of a and b
-   * @throws BadRequestException if operands are invalid
+   * @throws InvalidOperandError if operands are invalid
+   * @throws OverflowError or UnderflowError if result exceeds safe range
    */
   multiply(a: number, b: number): number {
     this.validateOperands(a, b);
-    return a * b;
+    const result = a * b;
+    this.validateResultRange(result, 'multiplication');
+    this.logger.debug(`Multiplication: ${a} * ${b} = ${result}`);
+    return result;
   }
 
   /**
@@ -67,16 +157,22 @@ export class CalculatorService {
    * @param a - First number (numerator)
    * @param b - Second number (denominator)
    * @returns The quotient of a and b
-   * @throws BadRequestException if operands are invalid or division by zero
+   * @throws InvalidOperandError if operands are invalid
+   * @throws DivisionByZeroError if denominator is zero
+   * @throws InvalidResultError if result is not finite
    */
   divide(a: number, b: number): number {
     this.validateOperands(a, b);
 
     if (b === 0) {
-      throw new BadRequestException('Division by zero is not allowed');
+      this.logger.error(`Division by zero attempted: ${a} / 0`);
+      throw new DivisionByZeroError();
     }
 
-    return a / b;
+    const result = a / b;
+    this.validateResultRange(result, 'division');
+    this.logger.debug(`Division: ${a} / ${b} = ${result}`);
+    return result;
   }
 
   /**
@@ -84,19 +180,16 @@ export class CalculatorService {
    * @param a - Base number
    * @param b - Exponent
    * @returns The result of a^b
-   * @throws BadRequestException if operands are invalid or result is not finite
+   * @throws InvalidOperandError if operands are invalid
+   * @throws InvalidResultError if result is not finite
+   * @throws OverflowError if result exceeds safe range
    */
   power(a: number, b: number): number {
     this.validateOperands(a, b);
 
     const result = Math.pow(a, b);
-
-    if (!Number.isFinite(result)) {
-      throw new BadRequestException(
-        'Power operation resulted in non-finite number',
-      );
-    }
-
+    this.validateResultRange(result, 'power');
+    this.logger.debug(`Power: ${a} ^ ${b} = ${result}`);
     return result;
   }
 
@@ -104,50 +197,72 @@ export class CalculatorService {
    * Calculates the square root of a number
    * @param a - The number to calculate square root of
    * @returns The square root of a
-   * @throws BadRequestException if operand is invalid or negative
+   * @throws InvalidOperandError if operand is invalid
+   * @throws InvalidOperationError if number is negative
    */
   sqrt(a: number): number {
     this.validateNumber(a, 'Operand');
 
     if (a < 0) {
-      throw new BadRequestException(
+      this.logger.error(`Square root of negative number attempted: sqrt(${a})`);
+      throw new InvalidOperationError(
+        'square root',
         'Cannot calculate square root of negative number',
       );
     }
 
-    return Math.sqrt(a);
+    const result = Math.sqrt(a);
+    this.logger.debug(`Square root: sqrt(${a}) = ${result}`);
+    return result;
   }
 
   /**
    * Calculates the factorial of a non-negative integer
    * @param n - The number to calculate factorial of
    * @returns The factorial of n
-   * @throws BadRequestException if n is invalid, negative, or not an integer
+   * @throws InvalidOperandError if n is invalid or not an integer
+   * @throws InvalidOperationError if n is negative or too large
+   * @throws OverflowError if result exceeds safe range
    */
   factorial(n: number): number {
     this.validateNumber(n, 'Operand');
 
     if (n < 0) {
-      throw new BadRequestException(
+      this.logger.error(
+        `Factorial of negative number attempted: factorial(${n})`,
+      );
+      throw new InvalidOperationError(
+        'factorial',
         'Cannot calculate factorial of negative number',
       );
     }
 
     if (!Number.isInteger(n)) {
-      throw new BadRequestException('Factorial requires an integer input');
+      this.logger.error(`Factorial of non-integer attempted: factorial(${n})`);
+      throw new InvalidOperandError('Operand', 'must be an integer');
     }
 
-    if (n > 170) {
-      throw new BadRequestException(
-        'Factorial input too large (maximum is 170)',
+    if (n > this.MAX_FACTORIAL_INPUT) {
+      this.logger.error(
+        `Factorial input too large: ${n} > ${this.MAX_FACTORIAL_INPUT}`,
+      );
+      throw new InvalidOperationError(
+        'factorial',
+        `Input too large (maximum is ${this.MAX_FACTORIAL_INPUT})`,
       );
     }
 
     let result = 1;
     for (let i = 2; i <= n; i++) {
       result *= i;
+      // Check for overflow during calculation
+      if (result === Infinity) {
+        this.logger.error(`Factorial overflow at n=${n}, i=${i}`);
+        throw new OverflowError('factorial', `Result overflow at step ${i}`);
+      }
     }
 
+    this.logger.debug(`Factorial: ${n}! = ${result}`);
     return result;
   }
 
@@ -156,59 +271,71 @@ export class CalculatorService {
    * @param a - The dividend
    * @param b - The divisor
    * @returns The remainder of a / b
-   * @throws BadRequestException if operands are invalid or b is zero
+   * @throws InvalidOperandError if operands are invalid
+   * @throws ModuloByZeroError if divisor is zero
    */
   modulo(a: number, b: number): number {
     this.validateOperands(a, b);
 
     if (b === 0) {
-      throw new BadRequestException('Modulo by zero is not allowed');
+      this.logger.error(`Modulo by zero attempted: ${a} % 0`);
+      throw new ModuloByZeroError();
     }
 
-    return a % b;
+    const result = a % b;
+    this.logger.debug(`Modulo: ${a} % ${b} = ${result}`);
+    return result;
   }
 
   /**
    * Calculates the absolute value of a number
    * @param a - The number
    * @returns The absolute value of a
-   * @throws BadRequestException if operand is invalid
+   * @throws InvalidOperandError if operand is invalid
    */
   absolute(a: number): number {
     this.validateNumber(a, 'Operand');
-    return Math.abs(a);
+    const result = Math.abs(a);
+    this.logger.debug(`Absolute: |${a}| = ${result}`);
+    return result;
   }
 
   /**
    * Rounds a number up to the nearest integer
    * @param a - The number to round
    * @returns The smallest integer greater than or equal to a
-   * @throws BadRequestException if operand is invalid
+   * @throws InvalidOperandError if operand is invalid
    */
   ceiling(a: number): number {
     this.validateNumber(a, 'Operand');
-    return Math.ceil(a);
+    const result = Math.ceil(a);
+    this.logger.debug(`Ceiling: ceil(${a}) = ${result}`);
+    return result;
   }
 
   /**
    * Rounds a number down to the nearest integer
    * @param a - The number to round
    * @returns The largest integer less than or equal to a
-   * @throws BadRequestException if operand is invalid
+   * @throws InvalidOperandError if operand is invalid
    */
   floor(a: number): number {
     this.validateNumber(a, 'Operand');
-    return Math.floor(a);
+    const result = Math.floor(a);
+    this.logger.debug(`Floor: floor(${a}) = ${result}`);
+    return result;
   }
 
   /**
    * Rounds a number to the nearest integer
    * @param a - The number to round
    * @returns The nearest integer to a
-   * @throws BadRequestException if operand is invalid
+   * @throws InvalidOperandError if operand is invalid
    */
   round(a: number): number {
     this.validateNumber(a, 'Operand');
-    return Math.round(a);
+    const result = Math.round(a);
+    this.logger.debug(`Round: round(${a}) = ${result}`);
+    return result;
   }
 }

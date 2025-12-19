@@ -7,13 +7,16 @@ import {
   ParseFloatPipe,
   ValidationPipe,
   UsePipes,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CalculatorService } from './calculator.service';
 import { CalculatorRequestDto, CalculatorResponseDto } from './dto';
+import { MathExceptionFilter } from './filters';
 
 @Controller('calculator')
 @ApiTags('calculator')
+@UseFilters(MathExceptionFilter)
 export class CalculatorController {
   constructor(private readonly calculatorService: CalculatorService) {}
 
