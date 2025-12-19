@@ -13,7 +13,7 @@ export class CalculatorResponseDto {
     example: 15,
     type: Number,
   })
-  result: number;
+  result!: number;
 
   /**
    * The operation performed
@@ -23,7 +23,7 @@ export class CalculatorResponseDto {
     example: 'add',
     enum: ['add', 'subtract', 'multiply', 'divide'],
   })
-  operation: string;
+  operation!: string;
 
   /**
    * Constructor to create a new response DTO

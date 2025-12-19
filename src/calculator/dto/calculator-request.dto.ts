@@ -19,7 +19,7 @@ export class CalculatorRequestDto {
   @IsNotEmpty({ message: 'First operand (a) is required' })
   @IsNumber({}, { message: 'First operand (a) must be a valid number' })
   @Type(() => Number)
-  a: number;
+  a!: number;
 
   /**
    * Second operand for the calculation
@@ -33,5 +33,5 @@ export class CalculatorRequestDto {
   @IsNotEmpty({ message: 'Second operand (b) is required' })
   @IsNumber({}, { message: 'Second operand (b) must be a valid number' })
   @Type(() => Number)
-  b: number;
+  b!: number;
 }

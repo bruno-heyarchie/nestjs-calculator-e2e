@@ -31,8 +31,8 @@ export class HealthService {
       timestamp: new Date().toISOString(),
       uptime: uptime,
       uptimeHuman: this.formatUptime(uptime),
-      environment: process.env.NODE_ENV || 'development',
-      version: process.env.npm_package_version || '0.0.1',
+      environment: process.env['NODE_ENV'] || 'development',
+      version: process.env['npm_package_version'] || '0.0.1',
       memory: {
         used: process.memoryUsage().heapUsed,
         total: process.memoryUsage().heapTotal,

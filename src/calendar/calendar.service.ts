@@ -46,17 +46,20 @@ export class CalendarService {
 
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month - 1, day);
-      days.push({
-        date: day,
-        dayOfWeek: dayNames[date.getDay()],
-      });
+      const dayOfWeek = dayNames[date.getDay()];
+      if (dayOfWeek) {
+        days.push({
+          date: day,
+          dayOfWeek,
+        });
+      }
     }
 
     return {
       month,
       year,
       monthName: firstDay.toLocaleString('en-US', { month: 'long' }),
-      firstDayOfWeek: dayNames[firstDayOfWeek],
+      firstDayOfWeek: dayNames[firstDayOfWeek] || 'Unknown',
       daysInMonth,
       days,
     };

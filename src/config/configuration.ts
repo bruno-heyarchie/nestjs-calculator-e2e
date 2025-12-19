@@ -11,9 +11,9 @@ export interface AppConfig {
 
 export default (): { app: AppConfig } => ({
   app: {
-    port: parseInt(process.env.PORT || '3000', 10),
-    environment: process.env.NODE_ENV || 'development',
-    apiPrefix: process.env.API_PREFIX || '',
-    corsEnabled: process.env.CORS_ENABLED === 'true',
+    port: parseInt(process.env['PORT'] || '3000', 10),
+    environment: process.env['NODE_ENV'] || 'development',
+    apiPrefix: process.env['API_PREFIX'] || '',
+    corsEnabled: process.env['CORS_ENABLED'] === 'true',
   },
 });

@@ -9,7 +9,7 @@ async function bootstrap() {
   // Create NestJS application with production optimizations
   const app = await NestFactory.create(AppModule, {
     logger:
-      process.env.NODE_ENV === 'production'
+      process.env['NODE_ENV'] === 'production'
         ? ['error', 'warn', 'log']
         : ['error', 'warn', 'log', 'debug', 'verbose'],
   });
@@ -19,7 +19,7 @@ async function bootstrap() {
 
   // Enable CORS if needed
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: process.env['CORS_ORIGIN'] || '*',
     credentials: true,
   });
 
@@ -36,12 +36,12 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   // Get port from environment or default to 3000
-  const port = process.env.PORT || 3000;
+  const port = process.env['PORT'] || 3000;
 
   await app.listen(port);
 
   logger.log(`Application is running on: http://localhost:${port}`);
-  logger.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.log(`Environment: ${process.env['NODE_ENV'] || 'development'}`);
   logger.log(`Health check available at: http://localhost:${port}/health`);
   logger.log(`API documentation available at: http://localhost:${port}/api`);
 }
