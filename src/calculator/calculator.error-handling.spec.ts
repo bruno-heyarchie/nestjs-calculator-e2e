@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CalculatorService } from './calculator.service';
+import { ValidationService } from './validation/validation.service';
 import {
   DivisionByZeroError,
   ModuloByZeroError,
@@ -15,7 +16,7 @@ describe('CalculatorService - Comprehensive Error Handling', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CalculatorService],
+      providers: [CalculatorService, ValidationService],
     }).compile();
 
     service = module.get<CalculatorService>(CalculatorService);

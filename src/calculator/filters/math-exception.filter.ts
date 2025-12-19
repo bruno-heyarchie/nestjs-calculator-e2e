@@ -6,13 +6,14 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { MathematicalError } from '../exceptions';
+import { MathematicalError, CalculatorException } from '../exceptions';
 
 /**
- * Exception filter for mathematical errors
+ * Exception filter for mathematical and calculator errors
  * Provides consistent error response formatting for all mathematical operations
+ * Handles both legacy MathematicalError and new CalculatorException types
  */
-@Catch(MathematicalError)
+@Catch(MathematicalError, CalculatorException)
 export class MathExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(MathExceptionFilter.name);
 
@@ -29,17 +30,19 @@ export class MathExceptionFilter implements ExceptionFilter {
         ? exceptionResponse
         : { message: exceptionResponse };
 
-    // Log the error with context
+    // Log the error with context including error code if available
+    const errorCode = (errorResponse as any).errorCode || 'N/A';
     this.logger.error(
-      `Mathematical error occurred - Path: ${request.url} - ` +
+      `Calculator error occurred - Path: ${request.url} - ` +
         `Method: ${request.method} - ` +
+        `Error Code: ${errorCode} - ` +
         `Error: ${JSON.stringify(errorResponse)}`,
     );
 
-    // Send formatted response
+    // Send formatted response with enhanced structure
     response.status(status).json({
       statusCode: status,
-      timestamp: new Date().toISOString(),
+      timestamp: errorResponse.timestamp || new Date().toISOString(),
       path: request.url,
       method: request.method,
       ...errorResponse,

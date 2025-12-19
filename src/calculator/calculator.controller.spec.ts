@@ -4,6 +4,7 @@ import request from 'supertest';
 import { CalculatorController } from './calculator.controller';
 import { CalculatorService } from './calculator.service';
 import { CalculatorModule } from './calculator.module';
+import { ValidationService } from './validation/validation.service';
 
 describe('CalculatorController', () => {
   let controller: CalculatorController;
@@ -12,7 +13,7 @@ describe('CalculatorController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CalculatorController],
-      providers: [CalculatorService],
+      providers: [CalculatorService, ValidationService],
     }).compile();
 
     controller = module.get<CalculatorController>(CalculatorController);
@@ -539,10 +540,9 @@ describe('CalculatorController (integration)', () => {
         .expect(200)
         .then((response) => {
           expect(response.body).toEqual({
-            operation: 'division',
-            a: 6,
-            b: 3,
             result: 2,
+            operation: 'division',
+            operands: [6, 3],
           });
         });
     });
@@ -578,8 +578,9 @@ describe('CalculatorController (integration)', () => {
         .then((response) => {
           expect(response.body).toHaveProperty('result');
           expect(response.body).toHaveProperty('operation');
-          expect(response.body).toHaveProperty('a');
-          expect(response.body).toHaveProperty('b');
+          expect(response.body).toHaveProperty('operands');
+          expect(Array.isArray(response.body.operands)).toBe(true);
+          expect(response.body.operands).toHaveLength(2);
         });
     });
   });
@@ -637,7 +638,8 @@ describe('CalculatorController (integration)', () => {
         expect(response.body).toHaveProperty('operation');
         if (
           op.expectedOp === 'addition' ||
-          op.expectedOp === 'multiplication'
+          op.expectedOp === 'multiplication' ||
+          op.expectedOp === 'division'
         ) {
           expect(response.body).toHaveProperty('operands');
           expect(Array.isArray(response.body.operands)).toBe(true);

@@ -4,3 +4,4 @@ export * from './calculator.controller';
 export * from './calculator.service';
 export * from './dto';
 export * from './interfaces';
+export * from './validation';

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CalculatorModule } from './calculator/calculator.module';
@@ -15,6 +17,7 @@ import { HealthModule } from './health/health.module';
  * @module AppModule
  * @description
  * - Configures NestJS ConfigModule for environment variable management
+ * - Configures ThrottlerModule for rate limiting (10 requests per minute)
  * - Imports CommonModule for global filters, interceptors, and pipes
  * - Imports custom ConfigModule for application-specific configuration
  * - Imports HealthModule for health check endpoints
@@ -35,6 +38,14 @@ import { HealthModule } from './health/health.module';
       cache: true, // Cache environment variables for better performance
       expandVariables: true, // Allow variable expansion in .env files (e.g., ${VAR})
     }),
+    // Rate limiting module to prevent abuse
+    // Limits requests to 10 per minute per IP address
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // Time window in milliseconds (60 seconds)
+        limit: 10, // Maximum number of requests within the time window
+      },
+    ]),
     // Global common module with filters, interceptors, and pipes
     CommonModule,
     // Custom configuration service for application-specific config
@@ -46,6 +57,13 @@ import { HealthModule } from './health/health.module';
     CalendarModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // Apply ThrottlerGuard globally to all routes
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

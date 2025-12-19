@@ -1,11 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { HealthService } from './health.service';
 
 /**
  * Health check controller
  * Provides endpoints for monitoring application health
+ * Rate limiting is disabled for health checks
  */
 @Controller('health')
+@SkipThrottle()
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 

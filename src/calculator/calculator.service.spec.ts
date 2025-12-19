@@ -1,13 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
 import { CalculatorService } from './calculator.service';
+import { ValidationService } from './validation/validation.service';
 
 describe('CalculatorService', () => {
   let service: CalculatorService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CalculatorService],
+      providers: [CalculatorService, ValidationService],
     }).compile();
 
     service = module.get<CalculatorService>(CalculatorService);

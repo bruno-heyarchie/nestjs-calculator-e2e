@@ -8,6 +8,8 @@ import {
 } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import helmet from 'helmet';
+import compression from 'compression';
 
 /**
  * Bootstrap the NestJS application
@@ -26,6 +28,18 @@ async function bootstrap() {
 
   // Enable shutdown hooks for graceful shutdown
   app.enableShutdownHooks();
+
+  // Security middleware - helmet for security headers
+  // In production, configure CSP properly; in development, disable for Swagger UI
+  app.use(
+    helmet({
+      contentSecurityPolicy:
+        process.env['NODE_ENV'] === 'production' ? undefined : false,
+    }),
+  );
+
+  // Compression middleware for response optimization
+  app.use(compression());
 
   // Enable CORS if needed
   app.enableCors({
@@ -91,6 +105,8 @@ async function bootstrap() {
   logger.log('Global validation pipe enabled with class-validator');
   logger.log('Global exception filters configured');
   logger.log('Global logging and transform interceptors configured');
+  logger.log('Security headers enabled with helmet');
+  logger.log('Response compression enabled');
 }
 
 void bootstrap();

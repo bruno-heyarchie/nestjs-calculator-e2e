@@ -98,13 +98,14 @@ export class CalculatorController {
   /**
    * Divide two numbers
    * GET /calculator/divide?a=6&b=3
+   * Returns the quotient with proper error handling for division by zero
    */
   @Get('divide')
   divide(
     @Query('a', ParseFloatPipe) a: number,
     @Query('b', ParseFloatPipe) b: number,
-  ): { operation: string; a: number; b: number; result: number } {
+  ): { result: number; operation: string; operands: number[] } {
     const result = this.calculatorService.divide(a, b);
-    return { operation: 'division', a, b, result };
+    return { result, operation: 'division', operands: [a, b] };
   }
 }

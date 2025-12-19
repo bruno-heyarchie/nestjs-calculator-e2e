@@ -8,6 +8,7 @@ import {
   InvalidOperationError,
   InvalidOperandError,
 } from './exceptions';
+import { ValidationService } from './validation/validation.service';
 
 @Injectable()
 export class CalculatorService {
@@ -18,6 +19,8 @@ export class CalculatorService {
   private readonly MIN_SAFE_INTEGER = Number.MIN_SAFE_INTEGER;
   private readonly MAX_FACTORIAL_INPUT = 170;
 
+  constructor(private readonly validationService: ValidationService) {}
+
   /**
    * Validates that a number is finite and not NaN
    * @param value - The value to validate
@@ -25,22 +28,7 @@ export class CalculatorService {
    * @throws InvalidOperandError if the value is not valid
    */
   private validateNumber(value: number, paramName: string): void {
-    if (typeof value !== 'number') {
-      this.logger.warn(
-        `Validation failed: ${paramName} is not a number (type: ${typeof value})`,
-      );
-      throw new InvalidOperandError(paramName, 'must be a number');
-    }
-
-    if (Number.isNaN(value)) {
-      this.logger.warn(`Validation failed: ${paramName} is NaN`);
-      throw new InvalidOperandError(paramName, 'must not be NaN');
-    }
-
-    if (!Number.isFinite(value)) {
-      this.logger.warn(`Validation failed: ${paramName} is not finite`);
-      throw new InvalidOperandError(paramName, 'must be a finite number');
-    }
+    this.validationService.validateOrThrow(value, paramName);
   }
 
   /**
@@ -49,8 +37,7 @@ export class CalculatorService {
    * @param b - Second operand
    */
   private validateOperands(a: number, b: number): void {
-    this.validateNumber(a, 'First operand');
-    this.validateNumber(b, 'Second operand');
+    this.validationService.validateOperandsOrThrow(a, b);
   }
 
   /**
