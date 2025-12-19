@@ -26,10 +26,38 @@ The project uses **Jest** as the primary testing framework with the following se
 
 - `jest.config.ts` - Main Jest configuration for unit tests
 - `test/jest-e2e.config.ts` - Jest configuration for E2E tests
-- `test/setup.ts` - Global setup for unit tests
-- `test/setup-e2e.ts` - Global setup for E2E tests
+- `test/setup.ts` - Global setup for unit tests (loads .env.test)
+- `test/setup-e2e.ts` - Global setup for E2E tests (loads .env.test)
+- `.env.test` - Test environment variables
 - `test/helpers/test-utils.ts` - Reusable test utilities
 - `test/helpers/test-data-factory.ts` - Test data generators
+
+### Test Environment Variables
+
+Test-specific environment variables are configured in `.env.test` at the project root:
+
+```bash
+# Application Configuration
+NODE_ENV=test
+PORT=3001
+
+# API Configuration
+API_PREFIX=api
+API_VERSION=v1
+
+# Logging
+LOG_LEVEL=error
+
+# Test Database Configuration
+TEST_DATABASE_URL=memory
+TEST_DATABASE_NAME=calculator_test
+
+# Test-specific settings
+ENABLE_TEST_LOGGING=false
+TEST_TIMEOUT=10000
+```
+
+These variables are automatically loaded by both `setup.ts` and `setup-e2e.ts` before any tests run, ensuring a consistent test environment.
 
 ## Running Tests
 

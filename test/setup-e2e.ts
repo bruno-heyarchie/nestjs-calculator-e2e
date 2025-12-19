@@ -3,7 +3,27 @@
  * This file runs before all E2E tests
  */
 
-// Set test environment variables
+import * as fs from 'fs';
+import * as path from 'path';
+
+// Load test environment variables from .env.test
+const envTestPath = path.resolve(process.cwd(), '.env.test');
+if (fs.existsSync(envTestPath)) {
+  const envConfig = fs.readFileSync(envTestPath, 'utf-8');
+  envConfig.split('\n').forEach((line) => {
+    const trimmedLine = line.trim();
+    // Skip comments and empty lines
+    if (trimmedLine && !trimmedLine.startsWith('#')) {
+      const [key, ...valueParts] = trimmedLine.split('=');
+      if (key && valueParts.length > 0) {
+        const value = valueParts.join('=').trim();
+        process.env[key.trim()] = value;
+      }
+    }
+  });
+}
+
+// Ensure test environment
 process.env.NODE_ENV = 'test';
 
 // Global test timeout for E2E tests (longer than unit tests)

@@ -45,6 +45,9 @@ lerna-debug.log*
 .env.local
 .env.*.local
 
+# Allow test environment file to be committed
+!.env.test
+
 # Temp files
 *.swp
 *.swo
