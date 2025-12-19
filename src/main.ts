@@ -146,7 +146,9 @@ async function bootstrap() {
     }
     logger.log('');
     logger.log('💡 TIP: Use npm run start:hmr for Hot Module Replacement');
-    logger.log('💡 TIP: Use npm run start:debug to enable debugging on port 9229');
+    logger.log(
+      '💡 TIP: Use npm run start:debug to enable debugging on port 9229',
+    );
   }
 }
 
@@ -158,7 +160,9 @@ if (module.hot) {
   module.hot.accept();
   module.hot.dispose(() => {
     const logger = new Logger('HMR');
-    logger.log('🔄 Hot Module Replacement triggered - refreshing application...');
+    logger.log(
+      '🔄 Hot Module Replacement triggered - refreshing application...',
+    );
     void NestFactory.create(AppModule).then((app) => {
       return app.close().then(() => {
         logger.log('✅ Application disposed successfully');

@@ -426,9 +426,7 @@ describe('CalculatorService', () => {
 
     it('should throw error for negative base with fractional exponent', () => {
       expect(() => service.power(-4, 0.5)).toThrow(BadRequestException);
-      expect(() => service.power(-4, 0.5)).toThrow(
-        'Result is not a number',
-      );
+      expect(() => service.power(-4, 0.5)).toThrow('Result is not a number');
     });
   });
 

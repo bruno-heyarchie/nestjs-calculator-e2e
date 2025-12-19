@@ -262,7 +262,7 @@ export class ValidationService implements IValidationService {
     }
 
     return values.map((value, index) =>
-      this.validateNumber(value, paramNames[index]),
+      this.validateNumber(value, paramNames[index] || 'parameter'),
     );
   }
 
@@ -322,7 +322,6 @@ export class ValidationService implements IValidationService {
         return {
           isValid: false,
           error: `${paramName} cannot be an empty string`,
-          value,
         };
       }
 

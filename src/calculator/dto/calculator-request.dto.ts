@@ -13,12 +13,40 @@ export class CalculatorRequestDto {
    * Must be a finite number within the safe JavaScript number range
    */
   @ApiProperty({
-    description: 'The first operand for the calculation',
+    description:
+      'The first operand for the calculation. Must be a valid finite number within JavaScript safe integer range.',
     example: 10,
     type: Number,
     required: true,
     minimum: Number.MIN_SAFE_INTEGER,
     maximum: Number.MAX_SAFE_INTEGER,
+    examples: {
+      positiveInteger: {
+        value: 10,
+        summary: 'Positive integer',
+        description: 'A positive whole number',
+      },
+      negativeInteger: {
+        value: -15,
+        summary: 'Negative integer',
+        description: 'A negative whole number',
+      },
+      decimal: {
+        value: 3.14159,
+        summary: 'Decimal number',
+        description: 'A floating-point number with decimal places',
+      },
+      zero: {
+        value: 0,
+        summary: 'Zero',
+        description: 'The number zero',
+      },
+      largeNumber: {
+        value: 999999,
+        summary: 'Large number',
+        description: 'A large positive number',
+      },
+    },
   })
   @IsDefined({ message: 'First operand (a) must be defined' })
   @IsNotEmpty({ message: 'First operand (a) is required and cannot be empty' })
@@ -53,12 +81,40 @@ export class CalculatorRequestDto {
    * Must be a finite number within the safe JavaScript number range
    */
   @ApiProperty({
-    description: 'The second operand for the calculation',
+    description:
+      'The second operand for the calculation. Must be a valid finite number within JavaScript safe integer range. For division operations, cannot be zero.',
     example: 5,
     type: Number,
     required: true,
     minimum: Number.MIN_SAFE_INTEGER,
     maximum: Number.MAX_SAFE_INTEGER,
+    examples: {
+      positiveInteger: {
+        value: 5,
+        summary: 'Positive integer',
+        description: 'A positive whole number',
+      },
+      negativeInteger: {
+        value: -8,
+        summary: 'Negative integer',
+        description: 'A negative whole number',
+      },
+      decimal: {
+        value: 2.5,
+        summary: 'Decimal number',
+        description: 'A floating-point number with decimal places',
+      },
+      one: {
+        value: 1,
+        summary: 'One',
+        description: 'The number one (identity for multiplication)',
+      },
+      smallDecimal: {
+        value: 0.001,
+        summary: 'Small decimal',
+        description: 'A very small positive number',
+      },
+    },
   })
   @IsDefined({ message: 'Second operand (b) must be defined' })
   @IsNotEmpty({

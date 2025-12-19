@@ -16,7 +16,12 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { CalculatorService } from './calculator.service';
-import { CalculatorRequestDto, CalculatorResponseDto } from './dto';
+import {
+  CalculatorRequestDto,
+  CalculatorResponseDto,
+  ValidationErrorResponseDto,
+  DivisionByZeroErrorResponseDto,
+} from './dto';
 import { MathExceptionFilter } from './filters';
 
 @Controller('calculator')
@@ -107,10 +112,26 @@ export class CalculatorController {
     status: 201,
     description: 'Successfully performed addition operation',
     type: CalculatorResponseDto,
+    schema: {
+      example: {
+        result: 8,
+        operation: 'addition',
+      },
+    },
   })
   @ApiResponse({
     status: 400,
     description: 'Invalid input - body must contain valid numbers',
+    schema: {
+      example: {
+        statusCode: 400,
+        message: [
+          'First operand (a) must be a valid finite number (not NaN or Infinity)',
+          'Second operand (b) is required and cannot be empty',
+        ],
+        error: 'Bad Request',
+      },
+    },
   })
   addPost(@Body() request: CalculatorRequestDto): CalculatorResponseDto {
     const result = this.calculatorService.add(request.a, request.b);
@@ -199,10 +220,23 @@ export class CalculatorController {
     status: 201,
     description: 'Successfully performed subtraction operation',
     type: CalculatorResponseDto,
+    schema: {
+      example: {
+        result: 7,
+        operation: 'subtraction',
+      },
+    },
   })
   @ApiResponse({
     status: 400,
     description: 'Invalid input - body must contain valid numbers',
+    schema: {
+      example: {
+        statusCode: 400,
+        message: ['First operand (a) must be defined'],
+        error: 'Bad Request',
+      },
+    },
   })
   subtractPost(@Body() request: CalculatorRequestDto): CalculatorResponseDto {
     const result = this.calculatorService.subtract(request.a, request.b);
@@ -297,10 +331,25 @@ export class CalculatorController {
     status: 201,
     description: 'Successfully performed multiplication operation',
     type: CalculatorResponseDto,
+    schema: {
+      example: {
+        result: 42,
+        operation: 'multiplication',
+      },
+    },
   })
   @ApiResponse({
     status: 400,
     description: 'Invalid input - body must contain valid numbers',
+    schema: {
+      example: {
+        statusCode: 400,
+        message: [
+          'Second operand (b) must be a valid finite number (not NaN or Infinity)',
+        ],
+        error: 'Bad Request',
+      },
+    },
   })
   multiplyPost(@Body() request: CalculatorRequestDto): CalculatorResponseDto {
     const result = this.calculatorService.multiply(request.a, request.b);
@@ -397,10 +446,24 @@ export class CalculatorController {
     status: 201,
     description: 'Successfully performed division operation',
     type: CalculatorResponseDto,
+    schema: {
+      example: {
+        result: 5,
+        operation: 'division',
+      },
+    },
   })
   @ApiResponse({
     status: 400,
-    description: 'Invalid input - body must contain valid numbers or division by zero error',
+    description:
+      'Invalid input - body must contain valid numbers or division by zero error',
+    schema: {
+      example: {
+        statusCode: 400,
+        message: 'Division by zero is not allowed',
+        error: 'Bad Request',
+      },
+    },
   })
   dividePost(@Body() request: CalculatorRequestDto): CalculatorResponseDto {
     const result = this.calculatorService.divide(request.a, request.b);

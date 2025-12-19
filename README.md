@@ -51,6 +51,49 @@ $ npm run test:cov
 $ npm run build
 ```
 
+## Continuous Integration
+
+This project uses GitHub Actions for continuous integration and automated testing.
+
+### Workflows
+
+- **Test Suite** (`.github/workflows/test.yml`): Runs on every push and PR
+  - Lints code with ESLint
+  - Runs unit tests with coverage
+  - Runs E2E tests
+  - Builds application
+  - Enforces quality gates
+
+- **Coverage Report** (`.github/workflows/coverage.yml`): Comprehensive coverage tracking
+  - Generates coverage reports
+  - Uploads to Codecov and Coveralls
+  - Enforces 80% coverage threshold
+  - Runs daily for monitoring
+
+### CI Commands
+
+```bash
+# Run all CI tests locally
+$ npm run test:ci
+
+# Check coverage threshold
+$ npm run test:cov:threshold
+
+# Run full test suite with coverage
+$ npm run test:all:cov
+```
+
+### Quality Gates
+
+All PRs must pass:
+- ✅ Linting (no errors)
+- ✅ Unit tests (100% pass rate)
+- ✅ E2E tests (100% pass rate)
+- ✅ Code coverage (≥80% threshold)
+- ✅ Build verification
+
+See [.github/workflows/README.md](.github/workflows/README.md) for detailed CI/CD documentation.
+
 ## Project Structure
 
 ```
