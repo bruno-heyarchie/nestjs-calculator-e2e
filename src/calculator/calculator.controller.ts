@@ -54,6 +54,18 @@ export class CalculatorController {
   }
 
   /**
+   * Subtract two numbers via POST
+   * POST /calculator/subtract
+   * Body: { "a": 5, "b": 3 }
+   */
+  @Post('subtract')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  subtractPost(@Body() request: CalculatorRequestDto): CalculatorResponseDto {
+    const result = this.calculatorService.subtract(request.a, request.b);
+    return { result, operation: 'subtraction' };
+  }
+
+  /**
    * Multiply two numbers
    * GET /calculator/multiply?a=5&b=3
    */
@@ -64,6 +76,18 @@ export class CalculatorController {
   ): { operation: string; a: number; b: number; result: number } {
     const result = this.calculatorService.multiply(a, b);
     return { operation: 'multiplication', a, b, result };
+  }
+
+  /**
+   * Multiply two numbers via POST
+   * POST /calculator/multiply
+   * Body: { "a": 5, "b": 3 }
+   */
+  @Post('multiply')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  multiplyPost(@Body() request: CalculatorRequestDto): CalculatorResponseDto {
+    const result = this.calculatorService.multiply(request.a, request.b);
+    return { result, operation: 'multiplication' };
   }
 
   /**

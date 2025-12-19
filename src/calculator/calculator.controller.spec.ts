@@ -92,6 +92,42 @@ describe('CalculatorController', () => {
     });
   });
 
+  describe('subtractPost', () => {
+    it('should return subtraction result with CalculatorResponseDto format', () => {
+      const request = { a: 5, b: 3 };
+      const result = controller.subtractPost(request);
+      expect(result).toEqual({
+        result: 2,
+        operation: 'subtraction',
+      });
+    });
+
+    it('should call service.subtract with correct parameters', () => {
+      const spy = jest.spyOn(service, 'subtract');
+      const request = { a: 10, b: 20 };
+      controller.subtractPost(request);
+      expect(spy).toHaveBeenCalledWith(10, 20);
+    });
+
+    it('should handle negative results when b > a', () => {
+      const request = { a: 3, b: 5 };
+      const result = controller.subtractPost(request);
+      expect(result).toEqual({
+        result: -2,
+        operation: 'subtraction',
+      });
+    });
+
+    it('should handle decimal numbers', () => {
+      const request = { a: 5.5, b: 3.2 };
+      const result = controller.subtractPost(request);
+      expect(result).toEqual({
+        result: 2.3,
+        operation: 'subtraction',
+      });
+    });
+  });
+
   describe('multiply', () => {
     it('should return multiplication result', () => {
       const result = controller.multiply(5, 3);
@@ -107,6 +143,60 @@ describe('CalculatorController', () => {
       const spy = jest.spyOn(service, 'multiply');
       controller.multiply(10, 20);
       expect(spy).toHaveBeenCalledWith(10, 20);
+    });
+  });
+
+  describe('multiplyPost', () => {
+    it('should return multiplication result with CalculatorResponseDto format', () => {
+      const request = { a: 5, b: 3 };
+      const result = controller.multiplyPost(request);
+      expect(result).toEqual({
+        result: 15,
+        operation: 'multiplication',
+      });
+    });
+
+    it('should call service.multiply with correct parameters', () => {
+      const spy = jest.spyOn(service, 'multiply');
+      const request = { a: 10, b: 20 };
+      controller.multiplyPost(request);
+      expect(spy).toHaveBeenCalledWith(10, 20);
+    });
+
+    it('should handle multiplication by zero', () => {
+      const request = { a: 5, b: 0 };
+      const result = controller.multiplyPost(request);
+      expect(result).toEqual({
+        result: 0,
+        operation: 'multiplication',
+      });
+    });
+
+    it('should handle negative numbers', () => {
+      const request = { a: -5, b: 3 };
+      const result = controller.multiplyPost(request);
+      expect(result).toEqual({
+        result: -15,
+        operation: 'multiplication',
+      });
+    });
+
+    it('should handle two negative numbers', () => {
+      const request = { a: -5, b: -3 };
+      const result = controller.multiplyPost(request);
+      expect(result).toEqual({
+        result: 15,
+        operation: 'multiplication',
+      });
+    });
+
+    it('should handle decimal numbers', () => {
+      const request = { a: 5.5, b: 2 };
+      const result = controller.multiplyPost(request);
+      expect(result).toEqual({
+        result: 11,
+        operation: 'multiplication',
+      });
     });
   });
 
