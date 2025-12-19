@@ -26,7 +26,12 @@ import { HealthModule } from './health/health.module';
     // Loads .env files and provides validation for required variables
     NestConfigModule.forRoot({
       isGlobal: true, // Makes ConfigService available globally without explicit import
-      envFilePath: ['.env', '.env.local', '.env.development', '.env.production'],
+      envFilePath: [
+        '.env',
+        '.env.local',
+        '.env.development',
+        '.env.production',
+      ],
       cache: true, // Cache environment variables for better performance
       expandVariables: true, // Allow variable expansion in .env files (e.g., ${VAR})
     }),
