@@ -635,7 +635,10 @@ describe('CalculatorController (integration)', () => {
 
         expect(response.body).toHaveProperty('result');
         expect(response.body).toHaveProperty('operation');
-        if (op.expectedOp === 'addition' || op.expectedOp === 'multiplication') {
+        if (
+          op.expectedOp === 'addition' ||
+          op.expectedOp === 'multiplication'
+        ) {
           expect(response.body).toHaveProperty('operands');
           expect(Array.isArray(response.body.operands)).toBe(true);
         } else {

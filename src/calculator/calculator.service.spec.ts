@@ -213,14 +213,14 @@ describe('CalculatorService', () => {
     it('should throw error for NaN as first operand', () => {
       expect(() => service.multiply(NaN, 5)).toThrow(BadRequestException);
       expect(() => service.multiply(NaN, 5)).toThrow(
-        'First operand: must not be NaN',
+        'First operand must be a valid finite number',
       );
     });
 
     it('should throw error for NaN as second operand', () => {
       expect(() => service.multiply(5, NaN)).toThrow(BadRequestException);
       expect(() => service.multiply(5, NaN)).toThrow(
-        'Second operand: must not be NaN',
+        'Second operand must be a valid finite number',
       );
     });
 
