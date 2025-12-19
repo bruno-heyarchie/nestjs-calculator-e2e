@@ -22,19 +22,19 @@ const config: Config = {
   },
 
   // Enable coverage collection
-  collectCoverage: false, // Set to true in CI or use --coverage flag
+  collectCoverage: true, // Always collect coverage to maintain quality standards
 
   // Coverage collection patterns
   collectCoverageFrom: [
     'src/**/*.(t|j)s',
-    '!src/**/*.spec.ts', // Exclude test files
+    '!src/**/*.spec.ts', // Exclude unit test files
     '!src/**/*.e2e-spec.ts', // Exclude e2e test files
-    '!src/**/*.interface.ts', // Exclude interface files
-    '!src/**/*.dto.ts', // Exclude DTO files
-    '!src/**/*.module.ts', // Exclude module files
-    '!src/main.ts', // Exclude main entry point
-    '!src/**/*.constants.ts', // Exclude constant files
-    '!src/**/*.enum.ts', // Exclude enum files
+    '!src/**/*.interface.ts', // Exclude interface files (no logic to test)
+    '!src/**/*.dto.ts', // Exclude DTO files (pure data structures)
+    '!src/**/*.module.ts', // Exclude module files (declarative config)
+    '!src/main.ts', // Exclude main entry point (bootstrap code)
+    '!src/**/*.constants.ts', // Exclude constant files (no logic)
+    '!src/**/*.enum.ts', // Exclude enum files (no logic)
   ],
 
   // Coverage output directory
