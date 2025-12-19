@@ -4,16 +4,11 @@ import {
   ExecutionContext,
   CallHandler,
   HttpException,
-  HttpStatus,
   Logger,
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import {
-  CalculatorException,
-  UnexpectedException,
-  CalculatorErrorCode,
-} from '../exceptions';
+import { CalculatorException, UnexpectedException } from '../exceptions';
 
 /**
  * Interceptor that handles all errors from calculator operations
