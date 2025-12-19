@@ -719,14 +719,14 @@ describe('Calculator Edge Cases and Error Conditions', () => {
     it('should handle string-like numbers that get coerced (undefined behavior)', () => {
       // Note: In actual API, ParseFloatPipe would handle this before service
       // These tests verify service behavior if invalid types somehow reach it
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const notANumber = undefined as any;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       expect(() => service.add(notANumber, 5)).toThrow(BadRequestException);
     });
 
     it('should handle null values that get coerced (undefined behavior)', () => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const nullValue = null as any;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       expect(() => service.add(nullValue, 5)).toThrow(BadRequestException);

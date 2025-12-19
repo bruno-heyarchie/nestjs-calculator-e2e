@@ -8,10 +8,12 @@ import {
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CalculatorService } from './calculator.service';
 import { CalculatorRequestDto, CalculatorResponseDto } from './dto';
 
 @Controller('calculator')
+@ApiTags('calculator')
 export class CalculatorController {
   constructor(private readonly calculatorService: CalculatorService) {}
 
