@@ -105,6 +105,103 @@ describe('CalculatorOperationDto', () => {
       const bError = errors.find((e) => e.property === 'b');
       expect(bError).toBeDefined();
     });
+
+    it('should fail validation when first operand is NaN', async () => {
+      const dto = plainToInstance(CalculatorOperationDto, {
+        a: NaN,
+        b: 5,
+      });
+
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      const aError = errors.find((e) => e.property === 'a');
+      expect(aError).toBeDefined();
+      expect(aError?.constraints).toHaveProperty('isNumber');
+    });
+
+    it('should fail validation when second operand is NaN', async () => {
+      const dto = plainToInstance(CalculatorOperationDto, {
+        a: 10,
+        b: NaN,
+      });
+
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      const bError = errors.find((e) => e.property === 'b');
+      expect(bError).toBeDefined();
+      expect(bError?.constraints).toHaveProperty('isNumber');
+    });
+
+    it('should fail validation when first operand is Infinity', async () => {
+      const dto = plainToInstance(CalculatorOperationDto, {
+        a: Infinity,
+        b: 5,
+      });
+
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      const aError = errors.find((e) => e.property === 'a');
+      expect(aError).toBeDefined();
+      expect(aError?.constraints).toHaveProperty('isNumber');
+    });
+
+    it('should fail validation when second operand is Infinity', async () => {
+      const dto = plainToInstance(CalculatorOperationDto, {
+        a: 10,
+        b: Infinity,
+      });
+
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+      const bError = errors.find((e) => e.property === 'b');
+      expect(bError).toBeDefined();
+      expect(bError?.constraints).toHaveProperty('isNumber');
+    });
+
+    it('should fail validation when operands exceed MAX_SAFE_INTEGER', async () => {
+      const dto = plainToInstance(CalculatorOperationDto, {
+        a: Number.MAX_SAFE_INTEGER + 1,
+        b: Number.MAX_SAFE_INTEGER + 1,
+      });
+
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    it('should fail validation when operands are below MIN_SAFE_INTEGER', async () => {
+      const dto = plainToInstance(CalculatorOperationDto, {
+        a: Number.MIN_SAFE_INTEGER - 1,
+        b: Number.MIN_SAFE_INTEGER - 1,
+      });
+
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    it('should trim whitespace from string numbers', () => {
+      const dto = plainToInstance(CalculatorOperationDto, {
+        a: '  15  ',
+        b: '  25  ',
+      });
+
+      expect(dto.a).toBe(15);
+      expect(dto.b).toBe(25);
+    });
+
+    it('should handle empty string by converting to 0', async () => {
+      const dto = plainToInstance(CalculatorOperationDto, {
+        a: '  ',
+        b: '  ',
+      });
+
+      // Type(() => Number) converts empty strings and whitespace to 0
+      expect(dto.a).toBe(0);
+      expect(dto.b).toBe(0);
+
+      // Validation should pass since 0 is a valid number
+      const errors = await validate(dto);
+      expect(errors.length).toBe(0);
+    });
   });
 });
 
