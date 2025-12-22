@@ -120,8 +120,7 @@ describe('Calculator API (e2e)', () => {
         .expect(200)
         .then((response) => {
           expect(response.body.operation).toBe('addition');
-          expect(response.body.a).toBe(1.5);
-          expect(response.body.b).toBe(2.3);
+          expect(response.body.operands).toEqual([1.5, 2.3]);
           expect(response.body.result).toBeCloseTo(3.8, 1);
         });
     });
@@ -183,8 +182,7 @@ describe('Calculator API (e2e)', () => {
         .expect(200)
         .then((response) => {
           expect(response.body.operation).toBe('subtraction');
-          expect(response.body.a).toBe(5.5);
-          expect(response.body.b).toBe(2.3);
+          expect(response.body.operands).toEqual([5.5, 2.3]);
           expect(response.body.result).toBeCloseTo(3.2, 1);
         });
     });
@@ -336,8 +334,7 @@ describe('Calculator API (e2e)', () => {
             .get(`/calculator/add?a=${a}&b=${b}`)
             .expect(200)
             .then((response) => {
-              expect(response.body.a).toBe(a);
-              expect(response.body.b).toBe(b);
+              expect(response.body.operands).toEqual([a, b]);
               if (Number.isInteger(expectedResult)) {
                 expect(response.body.result).toBe(expectedResult);
               } else {
@@ -357,8 +354,7 @@ describe('Calculator API (e2e)', () => {
             .get(`/calculator/subtract?a=${a}&b=${b}`)
             .expect(200)
             .then((response) => {
-              expect(response.body.a).toBe(a);
-              expect(response.body.b).toBe(b);
+              expect(response.body.operands).toEqual([a, b]);
               if (Number.isInteger(expectedResult)) {
                 expect(response.body.result).toBe(expectedResult);
               } else {
@@ -378,8 +374,7 @@ describe('Calculator API (e2e)', () => {
             .get(`/calculator/multiply?a=${a}&b=${b}`)
             .expect(200)
             .then((response) => {
-              expect(response.body.a).toBe(a);
-              expect(response.body.b).toBe(b);
+              expect(response.body.operands).toEqual([a, b]);
               if (Number.isInteger(expectedResult)) {
                 expect(response.body.result).toBe(expectedResult);
               } else {
@@ -399,8 +394,7 @@ describe('Calculator API (e2e)', () => {
             .get(`/calculator/divide?a=${a}&b=${b}`)
             .expect(200)
             .then((response) => {
-              expect(response.body.a).toBe(a);
-              expect(response.body.b).toBe(b);
+              expect(response.body.operands).toEqual([a, b]);
               if (Number.isInteger(expectedResult)) {
                 expect(response.body.result).toBe(expectedResult);
               } else {
