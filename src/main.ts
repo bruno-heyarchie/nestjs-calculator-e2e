@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { setupSwagger, getSwaggerUrl } from './config/swagger.config';
 import helmet from 'helmet';
 import compression from 'compression';
 
@@ -16,7 +16,9 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
   // Determine log levels based on environment variable or NODE_ENV
-  const getLogLevels = (): Array<'error' | 'warn' | 'log' | 'debug' | 'verbose'> => {
+  const getLogLevels = (): Array<
+    'error' | 'warn' | 'log' | 'debug' | 'verbose'
+  > => {
     const logLevel = process.env['LOG_LEVEL'] || 'info';
 
     // Map LOG_LEVEL to appropriate NestJS log levels
@@ -96,45 +98,8 @@ async function bootstrap() {
   );
 
   // Configure Swagger/OpenAPI documentation
-  const config = new DocumentBuilder()
-    .setTitle('Calculator API')
-    .setDescription(
-      'A NestJS-based REST API calculator application providing basic arithmetic operations.\n\n' +
-        '## Features\n' +
-        '- **Addition**: Add two numbers together\n' +
-        '- **Subtraction**: Subtract one number from another\n' +
-        '- **Multiplication**: Multiply two numbers\n' +
-        '- **Division**: Divide one number by another (with division by zero protection)\n\n' +
-        '## Request Methods\n' +
-        'All operations support both GET (query parameters) and POST (JSON body) methods.\n\n' +
-        '## Validation\n' +
-        'All inputs are automatically validated to ensure they are valid finite numbers within JavaScript safe integer range.',
-    )
-    .setVersion('1.0')
-    .setContact(
-      'API Support',
-      '',
-      process.env['SUPPORT_EMAIL'] || 'support@example.com',
-    )
-    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
-    .addTag('application', 'Application-level endpoints')
-    .addTag(
-      'calculator',
-      'Calculator arithmetic operations - supports both GET and POST methods',
-    )
-    .addTag('health', 'Health check and monitoring endpoints')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document, {
-    customSiteTitle: 'Calculator API Documentation',
-    customfavIcon: 'https://nestjs.com/img/logo-small.svg',
-    swaggerOptions: {
-      persistAuthorization: true,
-      docExpansion: 'list',
-      filter: true,
-      showRequestDuration: true,
-    },
-  });
+  // Only enabled in development and staging environments for security
+  setupSwagger(app);
 
   // Get port from environment or default to 3000
   const port = process.env['PORT'] || 3000;
@@ -143,11 +108,19 @@ async function bootstrap() {
 
   const isDevelopment = process.env['NODE_ENV'] === 'development';
   const isHMREnabled = process.env['HMR_ENABLED'] === 'true';
+  const swaggerUrl = getSwaggerUrl(port);
 
   logger.log(`🚀 Application is running on: http://localhost:${port}`);
   logger.log(`📦 Environment: ${process.env['NODE_ENV'] || 'development'}`);
   logger.log(`💚 Health check available at: http://localhost:${port}/health`);
-  logger.log(`📚 API documentation available at: http://localhost:${port}/api`);
+
+  // Only log Swagger URL if it's enabled
+  if (swaggerUrl) {
+    logger.log(`📚 API documentation available at: ${swaggerUrl}`);
+  } else {
+    logger.log('📚 API documentation disabled in this environment');
+  }
+
   logger.log('✅ Global validation pipe enabled with class-validator');
   logger.log('✅ Global exception filters configured');
   logger.log('✅ Global logging and transform interceptors configured');
@@ -159,7 +132,10 @@ async function bootstrap() {
     logger.log('🔧 Development mode features:');
     logger.log('   - Verbose logging enabled');
     logger.log('   - CORS enabled for all origins');
-    logger.log('   - Swagger UI enabled at /api');
+    if (swaggerUrl) {
+      const swaggerPath = swaggerUrl.split('/').pop();
+      logger.log(`   - Swagger UI enabled at /${swaggerPath}`);
+    }
     if (isHMREnabled) {
       logger.log('   - Hot Module Replacement (HMR) enabled');
       logger.log('   - File changes will trigger automatic reload');
