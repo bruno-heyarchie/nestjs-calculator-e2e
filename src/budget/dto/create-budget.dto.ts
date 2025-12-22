@@ -1,10 +1,26 @@
-import { IsString, IsNumber, IsEnum, IsBoolean, IsUUID, IsOptional, IsNotEmpty, Min, Max, Length, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsEnum,
+  IsBoolean,
+  IsUUID,
+  IsOptional,
+  IsNotEmpty,
+  Min,
+  Max,
+  Length,
+  IsDateString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { BudgetPeriod } from '../../entities/budget.entity';
 
 export class CreateBudgetDto {
-  @ApiProperty({ example: 'Monthly Groceries Budget', minLength: 1, maxLength: 255 })
+  @ApiProperty({
+    example: 'Monthly Groceries Budget',
+    minLength: 1,
+    maxLength: 255,
+  })
   @IsString()
   @IsNotEmpty()
   @Length(1, 255)

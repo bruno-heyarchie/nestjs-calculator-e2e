@@ -54,7 +54,10 @@ export class ExpenseFilterDto {
     format: 'date',
   })
   @IsOptional()
-  @IsDateString({}, { message: 'Start date must be a valid ISO 8601 date string' })
+  @IsDateString(
+    {},
+    { message: 'Start date must be a valid ISO 8601 date string' },
+  )
   startDate?: string;
 
   /**
@@ -68,7 +71,10 @@ export class ExpenseFilterDto {
     format: 'date',
   })
   @IsOptional()
-  @IsDateString({}, { message: 'End date must be a valid ISO 8601 date string' })
+  @IsDateString(
+    {},
+    { message: 'End date must be a valid ISO 8601 date string' },
+  )
   endDate?: string;
 
   /**

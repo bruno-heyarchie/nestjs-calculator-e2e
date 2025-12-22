@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, LessThanOrEqual, MoreThanOrEqual, IsNull, Not } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { Expense } from '../entities/expense.entity';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
@@ -13,7 +13,6 @@ import { ExpenseFilterDto } from './dto/expense-filter.dto';
 import {
   PaginatedExpenseResult,
   ExpenseSummary,
-  ExpenseQueryOptions,
 } from './interfaces/expense.interface';
 
 /**
@@ -35,7 +34,10 @@ export class ExpenseService {
    * @param createExpenseDto - Expense data
    * @returns Created expense
    */
-  async create(userId: string, createExpenseDto: CreateExpenseDto): Promise<Expense> {
+  async create(
+    userId: string,
+    createExpenseDto: CreateExpenseDto,
+  ): Promise<Expense> {
     this.logger.log(`Creating expense for user ${userId}`);
 
     try {
@@ -54,9 +56,15 @@ export class ExpenseService {
       // Fetch with relations for complete data
       return this.findOne(savedExpense.id, userId);
     } catch (error) {
-      this.logger.error(`Failed to create expense: ${error instanceof Error ? error.message : 'Unknown error'}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `Failed to create expense: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+      );
 
-      if (error instanceof Error && error.message.includes('violates foreign key constraint')) {
+      if (
+        error instanceof Error &&
+        error.message.includes('violates foreign key constraint')
+      ) {
         throw new BadRequestException('Invalid category or budget ID provided');
       }
 
@@ -158,18 +166,16 @@ export class ExpenseService {
     this.logger.log(`Updating expense ${id} for user ${userId}`);
 
     // Verify expense exists and belongs to user
-    const expense = await this.findOne(id, userId);
+    await this.findOne(id, userId);
 
     try {
-      // Prepare update data
-      const updateData: Partial<Expense> = {
-        ...updateExpenseDto,
-      };
-
-      // Convert date string to Date if provided
-      if (updateExpenseDto.date) {
-        updateData.date = new Date(updateExpenseDto.date);
-      }
+      // Prepare update data - convert date string to Date if provided
+      const updateData: any = updateExpenseDto.date
+        ? {
+            ...updateExpenseDto,
+            date: new Date(updateExpenseDto.date),
+          }
+        : { ...updateExpenseDto };
 
       // Update expense
       await this.expenseRepository.update(id, updateData);
@@ -179,9 +185,15 @@ export class ExpenseService {
       // Return updated expense with relations
       return this.findOne(id, userId);
     } catch (error) {
-      this.logger.error(`Failed to update expense ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `Failed to update expense ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+      );
 
-      if (error instanceof Error && error.message.includes('violates foreign key constraint')) {
+      if (
+        error instanceof Error &&
+        error.message.includes('violates foreign key constraint')
+      ) {
         throw new BadRequestException('Invalid category or budget ID provided');
       }
 
@@ -243,7 +255,10 @@ export class ExpenseService {
    * @param filterDto - Optional filters
    * @returns Expense summary statistics
    */
-  async getSummary(userId: string, filterDto?: ExpenseFilterDto): Promise<ExpenseSummary> {
+  async getSummary(
+    userId: string,
+    filterDto?: ExpenseFilterDto,
+  ): Promise<ExpenseSummary> {
     this.logger.log(`Generating expense summary for user ${userId}`);
 
     // Build base query
@@ -293,12 +308,16 @@ export class ExpenseService {
     // Add date range if filters provided
     if (filterDto?.startDate || filterDto?.endDate) {
       summary.dateRange = {
-        startDate: filterDto.startDate ? new Date(filterDto.startDate) : new Date(0),
+        startDate: filterDto.startDate
+          ? new Date(filterDto.startDate)
+          : new Date(0),
         endDate: filterDto.endDate ? new Date(filterDto.endDate) : new Date(),
       };
     }
 
-    this.logger.log(`Summary generated: ${summary.count} expenses, total: ${summary.totalAmount}`);
+    this.logger.log(
+      `Summary generated: ${summary.count} expenses, total: ${summary.totalAmount}`,
+    );
 
     return summary;
   }
@@ -345,11 +364,17 @@ export class ExpenseService {
     }
 
     // Filter by amount range
-    if (filterDto.minAmount !== undefined && filterDto.maxAmount !== undefined) {
-      queryBuilder.andWhere('expense.amount BETWEEN :minAmount AND :maxAmount', {
-        minAmount: filterDto.minAmount,
-        maxAmount: filterDto.maxAmount,
-      });
+    if (
+      filterDto.minAmount !== undefined &&
+      filterDto.maxAmount !== undefined
+    ) {
+      queryBuilder.andWhere(
+        'expense.amount BETWEEN :minAmount AND :maxAmount',
+        {
+          minAmount: filterDto.minAmount,
+          maxAmount: filterDto.maxAmount,
+        },
+      );
     } else if (filterDto.minAmount !== undefined) {
       queryBuilder.andWhere('expense.amount >= :minAmount', {
         minAmount: filterDto.minAmount,

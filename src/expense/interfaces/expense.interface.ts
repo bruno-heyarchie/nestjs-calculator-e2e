@@ -91,9 +91,7 @@ export interface ExpensePaginationOptions {
  * Combined query options for expense listing
  */
 export interface ExpenseQueryOptions
-  extends ExpenseFilterOptions,
-    ExpenseSortOptions,
-    ExpensePaginationOptions {}
+  extends ExpenseFilterOptions, ExpenseSortOptions, ExpensePaginationOptions {}
 
 /**
  * Paginated result wrapper

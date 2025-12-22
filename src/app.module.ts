@@ -10,12 +10,21 @@ import { CommonModule } from './common/common.module';
 import { ConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './health/health.module';
+import { UsersModule } from './users/users.module';
+import { CategoryModule } from './category/category.module';
+import { ExpenseModule } from './expense/expense.module';
+import { BudgetModule } from './budget/budget.module';
 
 @Module({
   imports: [
     NestConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.local', '.env.development', '.env.production'],
+      envFilePath: [
+        '.env',
+        '.env.local',
+        '.env.development',
+        '.env.production',
+      ],
       cache: true,
       expandVariables: true,
     }),
@@ -26,6 +35,10 @@ import { HealthModule } from './health/health.module';
     HealthModule,
     CalculatorModule,
     CalendarModule,
+    UsersModule,
+    CategoryModule,
+    ExpenseModule,
+    BudgetModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],

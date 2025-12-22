@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { Budget } from '../entities/budget.entity';
@@ -14,7 +19,10 @@ export class BudgetService {
     private readonly budgetRepository: Repository<Budget>,
   ) {}
 
-  async create(userId: string, createBudgetDto: CreateBudgetDto): Promise<Budget> {
+  async create(
+    userId: string,
+    createBudgetDto: CreateBudgetDto,
+  ): Promise<Budget> {
     const startDate = new Date(createBudgetDto.startDate);
     const endDate = new Date(createBudgetDto.endDate);
     if (startDate >= endDate) {
@@ -33,8 +41,19 @@ export class BudgetService {
     return await this.budgetRepository.save(budget);
   }
 
-  async findAll(userId: string, query: BudgetQueryDto): Promise<PaginatedBudgetResponseDto> {
-    const { page = 1, limit = 10, period, isActive, categoryId, startDateFrom, startDateTo } = query;
+  async findAll(
+    userId: string,
+    query: BudgetQueryDto,
+  ): Promise<PaginatedBudgetResponseDto> {
+    const {
+      page = 1,
+      limit = 10,
+      period,
+      isActive,
+      categoryId,
+      startDateFrom,
+      startDateTo,
+    } = query;
     const queryBuilder = this.budgetRepository
       .createQueryBuilder('budget')
       .where('budget.userId = :userId', { userId })
@@ -49,10 +68,14 @@ export class BudgetService {
       queryBuilder.andWhere('budget.categoryId = :categoryId', { categoryId });
     }
     if (startDateFrom) {
-      queryBuilder.andWhere('budget.startDate >= :startDateFrom', { startDateFrom });
+      queryBuilder.andWhere('budget.startDate >= :startDateFrom', {
+        startDateFrom,
+      });
     }
     if (startDateTo) {
-      queryBuilder.andWhere('budget.startDate <= :startDateTo', { startDateTo });
+      queryBuilder.andWhere('budget.startDate <= :startDateTo', {
+        startDateTo,
+      });
     }
     const skip = (page - 1) * limit;
     queryBuilder.skip(skip).take(limit);
@@ -76,24 +99,38 @@ export class BudgetService {
       throw new NotFoundException('Budget with ID ' + id + ' not found');
     }
     if (budget.userId !== userId) {
-      throw new ForbiddenException('You do not have permission to access this budget');
+      throw new ForbiddenException(
+        'You do not have permission to access this budget',
+      );
     }
     return budget;
   }
 
-  async update(id: string, userId: string, updateBudgetDto: UpdateBudgetDto): Promise<Budget> {
+  async update(
+    id: string,
+    userId: string,
+    updateBudgetDto: UpdateBudgetDto,
+  ): Promise<Budget> {
     const budget = await this.findOne(id, userId);
     if (updateBudgetDto.startDate || updateBudgetDto.endDate) {
-      const startDate = updateBudgetDto.startDate ? new Date(updateBudgetDto.startDate) : budget.startDate;
-      const endDate = updateBudgetDto.endDate ? new Date(updateBudgetDto.endDate) : budget.endDate;
+      const startDate = updateBudgetDto.startDate
+        ? new Date(updateBudgetDto.startDate)
+        : budget.startDate;
+      const endDate = updateBudgetDto.endDate
+        ? new Date(updateBudgetDto.endDate)
+        : budget.endDate;
       if (startDate >= endDate) {
         throw new BadRequestException('Start date must be before end date');
       }
     }
     Object.assign(budget, {
       ...updateBudgetDto,
-      ...(updateBudgetDto.startDate && { startDate: new Date(updateBudgetDto.startDate) }),
-      ...(updateBudgetDto.endDate && { endDate: new Date(updateBudgetDto.endDate) }),
+      ...(updateBudgetDto.startDate && {
+        startDate: new Date(updateBudgetDto.startDate),
+      }),
+      ...(updateBudgetDto.endDate && {
+        endDate: new Date(updateBudgetDto.endDate),
+      }),
     });
     return await this.budgetRepository.save(budget);
   }
@@ -119,6 +156,10 @@ export class BudgetService {
   }
 
   async updateSpentAmount(budgetId: string, amount: number): Promise<void> {
-    await this.budgetRepository.increment({ id: budgetId }, 'spentAmount', amount);
+    await this.budgetRepository.increment(
+      { id: budgetId },
+      'spentAmount',
+      amount,
+    );
   }
 }

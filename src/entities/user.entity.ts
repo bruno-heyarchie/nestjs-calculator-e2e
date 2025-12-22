@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   Index,
+  OneToMany,
 } from 'typeorm';
 
 /**
@@ -64,4 +65,10 @@ export class User {
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true, name: 'deleted_at' })
   deletedAt!: Date | null;
+
+  @OneToMany('Budget', 'user')
+  budgets!: any[];
+
+  @OneToMany('Expense', 'user')
+  expenses!: any[];
 }
