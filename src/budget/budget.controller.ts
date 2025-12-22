@@ -28,7 +28,10 @@ import { BudgetService } from './budget.service';
 import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetDto } from './dto/update-budget.dto';
 import { BudgetQueryDto } from './dto/budget-query.dto';
-import { BudgetResponseDto, PaginatedBudgetResponseDto } from './dto/budget-response.dto';
+import {
+  BudgetResponseDto,
+  PaginatedBudgetResponseDto,
+} from './dto/budget-response.dto';
 import { BudgetOwnershipGuard } from './guards/budget-ownership.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { ApiCommonResponses } from '../common/decorators/api-common-responses.decorator';
@@ -50,7 +53,8 @@ export class BudgetController {
   @Post()
   @ApiOperation({
     summary: 'Create a new budget',
-    description: 'Creates a new budget for the authenticated user with the provided details',
+    description:
+      'Creates a new budget for the authenticated user with the provided details',
   })
   @ApiCreatedResponse({
     description: 'Budget successfully created',
@@ -72,7 +76,8 @@ export class BudgetController {
   @Get()
   @ApiOperation({
     summary: 'Get all budgets',
-    description: 'Retrieves all budgets for the authenticated user with optional filtering and pagination',
+    description:
+      'Retrieves all budgets for the authenticated user with optional filtering and pagination',
   })
   @ApiOkResponse({
     description: 'Budgets successfully retrieved',
@@ -92,7 +97,8 @@ export class BudgetController {
   @UseGuards(BudgetOwnershipGuard)
   @ApiOperation({
     summary: 'Get budget by ID',
-    description: 'Retrieves a single budget by its ID. User must own the budget.',
+    description:
+      'Retrieves a single budget by its ID. User must own the budget.',
   })
   @ApiParam({
     name: 'id',
@@ -108,7 +114,8 @@ export class BudgetController {
     description: 'Budget not found',
   })
   @ApiForbiddenResponse({
-    description: 'Forbidden - User does not have permission to access this budget',
+    description:
+      'Forbidden - User does not have permission to access this budget',
   })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -140,7 +147,8 @@ export class BudgetController {
     description: 'Budget not found',
   })
   @ApiForbiddenResponse({
-    description: 'Forbidden - User does not have permission to update this budget',
+    description:
+      'Forbidden - User does not have permission to update this budget',
   })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -158,7 +166,8 @@ export class BudgetController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Delete budget',
-    description: 'Soft deletes a budget. User must own the budget. Historical data is preserved.',
+    description:
+      'Soft deletes a budget. User must own the budget. Historical data is preserved.',
   })
   @ApiParam({
     name: 'id',
@@ -173,7 +182,8 @@ export class BudgetController {
     description: 'Budget not found',
   })
   @ApiForbiddenResponse({
-    description: 'Forbidden - User does not have permission to delete this budget',
+    description:
+      'Forbidden - User does not have permission to delete this budget',
   })
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
@@ -194,7 +204,9 @@ export class BudgetController {
     description: 'Active budgets successfully retrieved',
     type: [BudgetResponseDto],
   })
-  async getActiveBudgets(@CurrentUser('id') userId: string): Promise<BudgetResponseDto[]> {
+  async getActiveBudgets(
+    @CurrentUser('id') userId: string,
+  ): Promise<BudgetResponseDto[]> {
     return await this.budgetService.getActiveBudgets(userId);
   }
 }

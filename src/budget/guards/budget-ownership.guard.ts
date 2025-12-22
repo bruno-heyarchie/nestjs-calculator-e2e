@@ -31,10 +31,15 @@ export class BudgetOwnershipGuard implements CanActivate {
     }
 
     // Verify budget ownership
-    const belongsToUser = await this.budgetService.belongsToUser(budgetId, user.id);
+    const belongsToUser = await this.budgetService.belongsToUser(
+      budgetId,
+      user.id,
+    );
 
     if (!belongsToUser) {
-      throw new ForbiddenException('You do not have permission to access this budget');
+      throw new ForbiddenException(
+        'You do not have permission to access this budget',
+      );
     }
 
     return true;

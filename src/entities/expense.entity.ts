@@ -1,5 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
-import { IsNotEmpty, IsNumber, IsString, IsDate, IsOptional, IsUUID, Min, MaxLength } from 'class-validator';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Index,
+} from 'typeorm';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsDate,
+  IsOptional,
+  IsUUID,
+  Min,
+  MaxLength,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { User } from './user.entity';
 import { Budget } from './budget.entity';
@@ -35,13 +53,13 @@ export class Expense {
   @IsString({ message: 'Notes must be a string' })
   @MaxLength(1000, { message: 'Notes must not exceed 1000 characters' })
   notes?: string;
-  
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt!: Date;
-  
+
   @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt!: Date;
-  
+
   @Column({ type: 'timestamp', nullable: true, name: 'deleted_at' })
   deletedAt!: Date | null;
 
@@ -64,11 +82,16 @@ export class Expense {
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
-  @ManyToOne(() => Budget, (budget: Budget) => budget.expenses, { nullable: true, onDelete: 'SET NULL' })
+  @ManyToOne(() => Budget, (budget: Budget) => budget.expenses, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'budget_id' })
   budget!: Budget | null;
 
-  @ManyToOne(() => Category, (category: Category) => category.expenses, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Category, (category: Category) => category.expenses, {
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'category_id' })
   category!: Category;
 }
