@@ -4,10 +4,13 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { BudgetModule } from './budget/budget.module';
 import { CalculatorModule } from './calculator/calculator.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { CommonModule } from './common/common.module';
 import { ConfigModule } from './config/config.module';
+import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './health/health.module';
 
 /**
@@ -21,6 +24,7 @@ import { HealthModule } from './health/health.module';
  * - Imports CommonModule for global filters, interceptors, and pipes
  * - Imports custom ConfigModule for application-specific configuration
  * - Imports HealthModule for health check endpoints
+ * - Imports AuthModule for authentication and password security
  * - Imports feature modules (CalculatorModule, CalendarModule)
  */
 @Module({
@@ -52,6 +56,8 @@ import { HealthModule } from './health/health.module';
     ConfigModule,
     // Health check endpoints for monitoring
     HealthModule,
+    // Authentication and authorization module
+    AuthModule,
     // Feature modules
     CalculatorModule,
     CalendarModule,
