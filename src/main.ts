@@ -15,12 +15,34 @@ import compression from 'compression';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
-  // Create NestJS application with production optimizations
+  // Determine log levels based on environment variable or NODE_ENV
+  const getLogLevels = (): Array<'error' | 'warn' | 'log' | 'debug' | 'verbose'> => {
+    const logLevel = process.env['LOG_LEVEL'] || 'info';
+
+    // Map LOG_LEVEL to appropriate NestJS log levels
+    switch (logLevel.toLowerCase()) {
+      case 'error':
+        return ['error'];
+      case 'warn':
+        return ['error', 'warn'];
+      case 'info':
+      case 'log':
+        return ['error', 'warn', 'log'];
+      case 'debug':
+        return ['error', 'warn', 'log', 'debug'];
+      case 'verbose':
+        return ['error', 'warn', 'log', 'debug', 'verbose'];
+      default:
+        // Default based on NODE_ENV
+        return process.env['NODE_ENV'] === 'production'
+          ? ['error', 'warn', 'log']
+          : ['error', 'warn', 'log', 'debug', 'verbose'];
+    }
+  };
+
+  // Create NestJS application with environment-specific logging
   const app = await NestFactory.create(AppModule, {
-    logger:
-      process.env['NODE_ENV'] === 'production'
-        ? ['error', 'warn', 'log']
-        : ['error', 'warn', 'log', 'debug', 'verbose'],
+    logger: getLogLevels(),
   });
 
   // Enable shutdown hooks for graceful shutdown

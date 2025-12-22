@@ -25,7 +25,8 @@ Environment variables are automatically loaded based on the `NODE_ENV` variable:
 
 1. The application loads `.env.${NODE_ENV}` first
 2. Falls back to `.env.example` for any missing variables
-3. Environment variables are loaded in `src/main.ts` using the `dotenv` package
+3. Environment variables are loaded using `dotenv-cli` in npm scripts
+4. Logging levels are dynamically configured in `src/main.ts` based on the `LOG_LEVEL` environment variable
 
 ### Available Environment Variables
 
@@ -39,7 +40,13 @@ API_PREFIX=api               # API route prefix
 API_VERSION=v1               # API version
 
 # Logging Configuration
-LOG_LEVEL=debug              # Logging level: error, warn, log, debug, verbose
+LOG_LEVEL=debug              # Logging level: error, warn, info/log, debug, verbose
+                              # The LOG_LEVEL determines which log messages are output:
+                              # - error: Only error messages
+                              # - warn: Errors and warnings
+                              # - info/log: Errors, warnings, and informational messages
+                              # - debug: All above plus debug messages
+                              # - verbose: All log levels including verbose output
 
 # CORS Configuration
 CORS_ORIGIN=*                # Allowed CORS origins
@@ -190,6 +197,63 @@ Source maps are enabled in `tsconfig.json`:
 ```
 
 This allows you to debug TypeScript code directly instead of compiled JavaScript.
+
+## Environment-Specific Logging
+
+The application implements dynamic logging level configuration based on the `LOG_LEVEL` environment variable. This allows precise control over log output in different environments.
+
+### How It Works
+
+In `src/main.ts`, the `getLogLevels()` function maps the `LOG_LEVEL` environment variable to NestJS logger levels:
+
+```typescript
+const getLogLevels = (): Array<'error' | 'warn' | 'log' | 'debug' | 'verbose'> => {
+  const logLevel = process.env['LOG_LEVEL'] || 'info';
+
+  switch (logLevel.toLowerCase()) {
+    case 'error': return ['error'];
+    case 'warn': return ['error', 'warn'];
+    case 'info':
+    case 'log': return ['error', 'warn', 'log'];
+    case 'debug': return ['error', 'warn', 'log', 'debug'];
+    case 'verbose': return ['error', 'warn', 'log', 'debug', 'verbose'];
+    default: return process.env['NODE_ENV'] === 'production'
+      ? ['error', 'warn', 'log']
+      : ['error', 'warn', 'log', 'debug', 'verbose'];
+  }
+};
+```
+
+### Logging Levels by Environment
+
+- **Development** (`.env.development`): `LOG_LEVEL=debug`
+  - Shows errors, warnings, logs, and debug messages
+  - Best for active development and troubleshooting
+
+- **Staging** (`.env.staging`): `LOG_LEVEL=info`
+  - Shows errors, warnings, and informational logs
+  - Balances detail with performance
+
+- **Production** (`.env.production`): `LOG_LEVEL=info`
+  - Shows only errors, warnings, and important logs
+  - Optimized for performance and log volume
+
+### Changing Log Levels
+
+To adjust logging verbosity, modify the `LOG_LEVEL` in your environment file:
+
+```bash
+# More verbose (development)
+LOG_LEVEL=verbose
+
+# Standard (production)
+LOG_LEVEL=info
+
+# Minimal (critical only)
+LOG_LEVEL=error
+```
+
+Then restart the application to apply changes.
 
 ## Development Workflow
 
