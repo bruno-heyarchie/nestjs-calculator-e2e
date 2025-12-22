@@ -434,10 +434,9 @@ export class MockResponseFactory {
     result: number,
   ) {
     return {
-      operation,
-      a,
-      b,
       result,
+      operation,
+      operands: [a, b],
     };
   }
 

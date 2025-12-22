@@ -26,7 +26,8 @@ describe('CalculatorController', () => {
 
   describe('add', () => {
     it('should return addition result', () => {
-      const result = controller.add(5, 3);
+      const query = { a: 5, b: 3 };
+      const result = controller.add(query);
       expect(result).toEqual({
         result: 8,
         operation: 'addition',
@@ -36,7 +37,8 @@ describe('CalculatorController', () => {
 
     it('should call service.add with correct parameters', () => {
       const spy = jest.spyOn(service, 'add');
-      controller.add(10, 20);
+      const query = { a: 10, b: 20 };
+      controller.add(query);
       expect(spy).toHaveBeenCalledWith(10, 20);
     });
   });

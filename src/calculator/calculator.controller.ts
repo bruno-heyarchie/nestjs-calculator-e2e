@@ -56,10 +56,13 @@ export class CalculatorController {
     schema: {
       type: 'object',
       properties: {
-        operation: { type: 'string', example: 'addition' },
-        a: { type: 'number', example: 5 },
-        b: { type: 'number', example: 3 },
         result: { type: 'number', example: 8 },
+        operation: { type: 'string', example: 'addition' },
+        operands: {
+          type: 'array',
+          items: { type: 'number' },
+          example: [5, 3],
+        },
       },
     },
   })
@@ -68,13 +71,12 @@ export class CalculatorController {
     description: 'Invalid input - parameters must be valid numbers',
   })
   add(@Query() query: CalculatorRequestDto): {
-    operation: string;
-    a: number;
-    b: number;
     result: number;
+    operation: string;
+    operands: number[];
   } {
     const result = this.calculatorService.add(query.a, query.b);
-    return { operation: 'addition', a: query.a, b: query.b, result };
+    return { result, operation: 'addition', operands: [query.a, query.b] };
   }
 
   /**
@@ -164,10 +166,13 @@ export class CalculatorController {
     schema: {
       type: 'object',
       properties: {
-        operation: { type: 'string', example: 'subtraction' },
-        a: { type: 'number', example: 10 },
-        b: { type: 'number', example: 3 },
         result: { type: 'number', example: 7 },
+        operation: { type: 'string', example: 'subtraction' },
+        operands: {
+          type: 'array',
+          items: { type: 'number' },
+          example: [10, 3],
+        },
       },
     },
   })
@@ -176,13 +181,16 @@ export class CalculatorController {
     description: 'Invalid input - parameters must be valid numbers',
   })
   subtract(@Query() query: CalculatorRequestDto): {
-    operation: string;
-    a: number;
-    b: number;
     result: number;
+    operation: string;
+    operands: number[];
   } {
     const result = this.calculatorService.subtract(query.a, query.b);
-    return { operation: 'subtraction', a: query.a, b: query.b, result };
+    return {
+      result,
+      operation: 'subtraction',
+      operands: [query.a, query.b],
+    };
   }
 
   /**
